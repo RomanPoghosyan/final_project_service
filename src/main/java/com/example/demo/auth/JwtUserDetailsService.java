@@ -18,7 +18,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     private UserService userService;
 
     @Autowired
-    public JwtUserDetailsService(UserRepository userRepository){
+    public JwtUserDetailsService(UserService userService){
         this.userService = userService;
     }
 
