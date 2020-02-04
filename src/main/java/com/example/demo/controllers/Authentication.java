@@ -9,7 +9,9 @@ import com.example.demo.models.requests.SignupRequest;
 import com.example.demo.models.responses.MeResponse;
 import com.example.demo.repos.UserRepository;
 import com.example.demo.services.UserService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -56,15 +58,20 @@ public class Authentication {
     }
 
     @PostMapping("/signup")
-    public User signup(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
         User user = new User();
         user.setFirst_name(signupRequest.getFirst_name());
         user.setLast_name(signupRequest.getLast_name());
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user = userService.save(user);
-        return user;
+        try {
+            user = userService.save(user);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch ( ConstraintViolationException e ) {
+            return new ResponseEntity<>(new Error(), HttpStatus.ALREADY_REPORTED);
+        }
+
     }
 
     @PostMapping("/login")
