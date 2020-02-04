@@ -58,9 +58,8 @@ public class Authentication {
         return new MeResponse(user.getId(), user.getEmail(), user.getUsername());
     }
 
-    @ExceptionHandler({UserAlreadyExists.class})
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) throws UserAlreadyExists {
         User user = new User();
         user.setFirst_name(signupRequest.getFirst_name());
         user.setLast_name(signupRequest.getLast_name());
@@ -69,10 +68,7 @@ public class Authentication {
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user = userService.save(user);
         if ( user == null ) {
-            return new ResponseEntity<>(new
-                    com.example.demo.exceptions.
-                    ExceptionHandler().userAlreadyExistsException(),
-                    HttpStatus.CONFLICT);
+            throw new UserAlreadyExists();
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
