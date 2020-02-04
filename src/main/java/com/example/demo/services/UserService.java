@@ -18,7 +18,11 @@ public class UserService {
     }
 
     public User save ( User user ) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (Exception exception) {
+            return null;
+        }
     }
 
     public Optional<User> findByUsername ( String username ) {

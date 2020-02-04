@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.auth.CustomUser;
 import com.example.demo.auth.JwtHelper;
 import com.example.demo.auth.JwtUserDetailsService;
+import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.User;
 import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
@@ -24,13 +25,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
 public class Authentication {
-
     private final AuthenticationManager authenticationManager;
 
     private final JwtHelper jwtHelper;
@@ -54,10 +55,10 @@ public class Authentication {
     public MeResponse me() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUser user = (CustomUser) securityContext.getAuthentication().getPrincipal();
-
         return new MeResponse(user.getId(), user.getEmail(), user.getUsername());
     }
 
+    @ExceptionHandler({UserAlreadyExists.class})
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
         User user = new User();
@@ -66,19 +67,19 @@ public class Authentication {
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        try {
-            user = userService.save(user);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch ( ConstraintViolationException e ) {
-            return new ResponseEntity<>(new Error(), HttpStatus.ALREADY_REPORTED);
+        user = userService.save(user);
+        if ( user == null ) {
+            return new ResponseEntity<>(new
+                    com.example.demo.exceptions.
+                    ExceptionHandler().userAlreadyExistsException(),
+                    HttpStatus.CONFLICT);
         }
-
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
         this.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
-
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         final String token = jwtHelper.generateToken(userDetails);
 
