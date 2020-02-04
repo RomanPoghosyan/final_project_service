@@ -40,7 +40,7 @@ public class Authentication {
     private final UserService userService;
 
     @Autowired
-    public Authentication(AuthenticationManager authenticationManager, JwtHelper jwtHelper, JwtUserDetailsService userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService) {
+    public Authentication(AuthenticationManager authenticationManager, JwtHelper jwtHelper, JwtUserDetailsService userDetailsService, PasswordEncoder passwordEncoder, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtHelper = jwtHelper;
         this.userDetailsService = userDetailsService;
@@ -52,6 +52,7 @@ public class Authentication {
     public MeResponse me() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUser user = (CustomUser) securityContext.getAuthentication().getPrincipal();
+
         return new MeResponse(user.getId(), user.getEmail(), user.getUsername());
     }
 

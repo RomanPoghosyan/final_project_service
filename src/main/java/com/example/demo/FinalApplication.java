@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @ComponentScan("com.example.demo.controllers")
 @ComponentScan("com.example.demo.configuration")
+@ComponentScan("com.example.demo.services")
 @EntityScan("com.example.demo.models")
 @EnableJpaRepositories("com.example.demo.repos")
 @EnableTransactionManagement
