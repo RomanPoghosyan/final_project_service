@@ -8,6 +8,7 @@ import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
 import com.example.demo.models.responses.MeResponse;
 import com.example.demo.repos.UserRepository;
+import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,16 +35,16 @@ public class Authentication {
 
     private final JwtUserDetailsService userDetailsService;
 
-    private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
+    private final UserService userService;
+
     @Autowired
-    public Authentication(AuthenticationManager authenticationManager, JwtHelper jwtHelper, JwtUserDetailsService userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public Authentication(AuthenticationManager authenticationManager, JwtHelper jwtHelper, JwtUserDetailsService userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtHelper = jwtHelper;
         this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -57,9 +58,12 @@ public class Authentication {
     @PostMapping("/signup")
     public User signup(@RequestBody SignupRequest signupRequest) {
         User user = new User();
+        user.setFirst_name(signupRequest.getFirst_name());
+        user.setLast_name(signupRequest.getLast_name());
         user.setUsername(signupRequest.getUsername());
+        user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user = userRepository.save(user);
+        user = userService.save(user);
         return user;
     }
 
