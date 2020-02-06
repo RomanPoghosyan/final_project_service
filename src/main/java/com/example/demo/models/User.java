@@ -2,9 +2,7 @@ package com.example.demo.models;
 
 
 import javax.persistence.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "users")

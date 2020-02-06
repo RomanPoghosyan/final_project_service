@@ -8,18 +8,24 @@ import com.example.demo.models.User;
 import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
 import com.example.demo.models.responses.MeResponse;
+import com.example.demo.repos.UserRepository;
 import com.example.demo.services.UserService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,32 +69,44 @@ public class Authentication {
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user = userService.save(user);
         if ( user == null ) {
-            return new com.example.demo.exceptions.
-                    ExceptionHandler().userAlreadyExistsException();
+            return new ResponseEntity<>(new
+                    com.example.demo.exceptions.
+                    ExceptionHandler().userAlreadyExistsException(),
+                    HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
-        ResponseEntity entity = this.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
-        if ( entity != null )
-            return entity;
+        this.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         final String token = jwtHelper.generateToken(userDetails);
 
         Map<String, String> body = new HashMap<String, String>() {{
             put("token", token);
         }};
+
         return ResponseEntity.ok(body);
     }
 
-    private ResponseEntity<?> authenticate(String username, String password) throws Exception {
+    @PostMapping("/logout")
+    public String logout() {
+        return "asd";
+    }
+
+    private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return null;
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
-            return new com.example.demo.exceptions.ExceptionHandler().wrongAuthenticationData();
+            throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public String authError() {
+        return "unauthorized";
     }
 }
