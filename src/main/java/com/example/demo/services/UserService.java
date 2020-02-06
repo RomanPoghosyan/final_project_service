@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.User;
 import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User save ( User user ) {
+    public User save ( User user ) throws UserAlreadyExists {
         try {
             return userRepository.save(user);
         } catch (Exception exception) {
-            return null;
+            throw new UserAlreadyExists();
         }
     }
 

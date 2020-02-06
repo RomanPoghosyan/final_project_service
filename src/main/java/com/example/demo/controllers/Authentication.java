@@ -8,6 +8,8 @@ import com.example.demo.models.User;
 import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
 import com.example.demo.models.responses.MeResponse;
+import com.example.demo.models.responses.OkResponse;
+import com.example.demo.models.responses.Response;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,14 +51,14 @@ public class Authentication {
     }
 
     @GetMapping("/me")
-    public MeResponse me() {
+    public ResponseEntity<Response> me() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUser user = (CustomUser) securityContext.getAuthentication().getPrincipal();
-        return new MeResponse(user.getId(), user.getEmail(), user.getUsername());
+        return new ResponseEntity<>(new OkResponse(new MeResponse(user.getId(), user.getEmail(), user.getUsername())), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) throws UserAlreadyExists {
+    public ResponseEntity<Response> signup(@RequestBody SignupRequest signupRequest) throws UserAlreadyExists {
         User user = new User();
         user.setFirst_name(signupRequest.getFirst_name());
         user.setLast_name(signupRequest.getLast_name());
@@ -64,14 +66,11 @@ public class Authentication {
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user = userService.save(user);
-        if ( user == null ) {
-            throw new UserAlreadyExists();
-        }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(new OkResponse(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<Response> login(@RequestBody LoginRequest loginRequest) throws Exception {
         this.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         final String token = jwtHelper.generateToken(userDetails);
@@ -80,12 +79,7 @@ public class Authentication {
             put("token", token);
         }};
 
-        return ResponseEntity.ok(body);
-    }
-
-    @PostMapping("/logout")
-    public String logout() {
-        return "asd";
+        return new ResponseEntity<>(new OkResponse(body), HttpStatus.ACCEPTED);
     }
 
     private void authenticate(String username, String password) throws Exception {
