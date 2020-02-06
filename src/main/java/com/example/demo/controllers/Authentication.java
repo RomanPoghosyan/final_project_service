@@ -8,9 +8,7 @@ import com.example.demo.models.User;
 import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
 import com.example.demo.models.responses.MeResponse;
-import com.example.demo.repos.UserRepository;
 import com.example.demo.services.UserService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +22,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/auth")
 public class Authentication {
     private final AuthenticationManager authenticationManager;
 
