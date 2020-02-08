@@ -57,7 +57,7 @@ public class Authentication {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Response> signup(@RequestBody SignupRequest signupRequest) throws UserAlreadyExists {
+    public ResponseEntity<Response> signup(@RequestBody SignupRequest signupRequest) throws Exception {
         User user = new User();
         user.setFirst_name(signupRequest.getFirst_name());
         user.setLast_name(signupRequest.getLast_name());
@@ -65,7 +65,7 @@ public class Authentication {
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user = userService.save(user);
-        return new ResponseEntity<>(new OkResponse(user), HttpStatus.CREATED);
+        return this.login(new LoginRequest(signupRequest.getUsername(), signupRequest.getPassword()));
     }
 
     @PostMapping("/login")
