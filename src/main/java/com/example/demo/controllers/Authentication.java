@@ -3,12 +3,10 @@ package com.example.demo.controllers;
 import com.example.demo.auth.CustomUser;
 import com.example.demo.auth.JwtHelper;
 import com.example.demo.auth.JwtUserDetailsService;
-import com.example.demo.exceptions.BadCredentials;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.User;
 import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
-import com.example.demo.models.responses.BadResponse;
 import com.example.demo.models.responses.MeResponse;
 import com.example.demo.models.responses.OkResponse;
 import com.example.demo.models.responses.Response;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -26,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
