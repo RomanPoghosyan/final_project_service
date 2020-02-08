@@ -13,7 +13,7 @@ public class Response {
     public Response(int resultCode, List<String> messages) {
         this.resultCode = resultCode;
         this.messages = messages;
-        this.body = new Object();
+        this.body = null;
     }
 
     public Response(int resultCode, Object body) {

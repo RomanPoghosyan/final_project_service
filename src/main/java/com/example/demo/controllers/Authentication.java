@@ -3,10 +3,12 @@ package com.example.demo.controllers;
 import com.example.demo.auth.CustomUser;
 import com.example.demo.auth.JwtHelper;
 import com.example.demo.auth.JwtUserDetailsService;
+import com.example.demo.exceptions.BadCredentials;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.User;
 import com.example.demo.models.requests.LoginRequest;
 import com.example.demo.models.requests.SignupRequest;
+import com.example.demo.models.responses.BadResponse;
 import com.example.demo.models.responses.MeResponse;
 import com.example.demo.models.responses.OkResponse;
 import com.example.demo.models.responses.Response;
@@ -24,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,13 +90,6 @@ public class Authentication {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
         }
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public String authError() {
-        return "unauthorized";
     }
 }
