@@ -68,7 +68,7 @@ public class Authentication {
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user = userService.save(user);
+        userService.save(user);
         return this.login(new LoginRequest(signupRequest.getUsername(), signupRequest.getPassword()));
     }
 
@@ -77,11 +77,9 @@ public class Authentication {
         this.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         final String token = jwtHelper.generateToken(userDetails);
-
         Map<String, String> body = new HashMap<String, String>() {{
             put("token", token);
         }};
-
         return new ResponseEntity<>(new OkResponse(body), HttpStatus.ACCEPTED);
     }
 
