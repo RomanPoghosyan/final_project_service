@@ -18,11 +18,16 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(UserAlreadyExists.class)
     public ResponseEntity<BadResponse> userAlreadyExistsException(){
-        return new ResponseEntity<>(new BadResponse(Arrays.asList("User already exists")), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("User already exists")), HttpStatus.ALREADY_REPORTED);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<BadResponse> badCredentialsException(){
-        return new ResponseEntity<>(new BadResponse(Arrays.asList("Wrong username or password")), HttpStatus.OK);
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Wrong username or password")), HttpStatus.UNAUTHORIZED);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(Unauthorized.class)
+    public ResponseEntity<BadResponse> unauthorized(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Unauthorized")), HttpStatus.UNAUTHORIZED);
     }
 }

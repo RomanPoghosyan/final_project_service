@@ -4,7 +4,10 @@ package com.example.demo.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +32,14 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
+
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+        return projectUserRoleLinks;
+    }
+
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
+    }
 
     @OneToMany
     @JoinColumn(name = "user_id")
@@ -97,14 +108,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
-        return projectUserRoleLinks;
-    }
-
-    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
-        this.projectUserRoleLinks = projectUserRoleLinks;
     }
 
     public List<Comment> getComments() {

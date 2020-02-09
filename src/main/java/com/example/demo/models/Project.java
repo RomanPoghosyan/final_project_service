@@ -1,8 +1,10 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "projects")
@@ -15,7 +17,7 @@ public class Project {
     private String name;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<ProjectUserRoleLink> projectUserRoleLinks;
+    private List<ProjectUserRoleLink> projectUserRoleLinks = new ArrayList<>();
 
     @OneToMany
     @JoinColumn(name = "project_id")
@@ -37,19 +39,21 @@ public class Project {
         this.name = name;
     }
 
-    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
-        return projectUserRoleLinks;
-    }
-
-    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
-        this.projectUserRoleLinks = projectUserRoleLinks;
-    }
-
+    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @JsonIgnore
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+        return projectUserRoleLinks;
+    }
+
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
     }
 }
