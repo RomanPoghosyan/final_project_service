@@ -15,10 +15,12 @@ import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
@@ -28,17 +30,12 @@ public class ProjectController {
     private ProjectService projectService;
     private UserService userService;
     private RoleService roleService;
-    private UserRepository userRepository;
-//    private ProjectUserRoleLinkService purlService;
-
 
     @Autowired
-    public ProjectController(ProjectService projectService, UserService userService, RoleService roleService, UserRepository userRepository){
+    public ProjectController(ProjectService projectService, UserService userService, RoleService roleService){
         this.projectService = projectService;
         this.userService = userService;
         this.roleService = roleService;
-        this.userRepository = userRepository;
-//        this.purlService = purlService;
     }
 
     @GetMapping("/{projectId}")
@@ -53,18 +50,7 @@ public class ProjectController {
 //    }
 
     @PostMapping(consumes={"application/json"})
-    public ResponseEntity<Response> add(@RequestBody Project project) throws UserAlreadyExists {
-        Project p = projectService.save(project);
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        CustomUser user = (CustomUser) securityContext.getAuthentication().getPrincipal();
-        User u = userRepository.findById(user.getId()).get();
-        Role r = roleService.findById(1L).get();
-
-        u.getProjectRoleMap().put(p, r);
-
-        userRepository.save(u);
-
-        return new ResponseEntity<>(new OkResponse(p), HttpStatus.OK);
+    public ResponseEntity<Response> add(@RequestBody Project project, Authentication authentication) throws UserAlreadyExists {
+        return new ResponseEntity<>(new OkResponse(projectService.add(project, authentication)), HttpStatus.OK);
     }
 }

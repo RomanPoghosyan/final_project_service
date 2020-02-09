@@ -14,27 +14,8 @@ public class Role {
 
     private String name;
 
-//    @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    private List<ProjectUserRoleLink> projectUserRoleLinks;
-
-//    @ManyToMany(mappedBy="roles", targetEntity=User.class)
-//    private Collection<User> users = new ArrayList<User>();
-
-
-//    @JoinTable(name = "USER_PROJECT_ROLE")
-//            inverseJoinColumns = @JoinColumn(name = "user_id"),
-//            joinColumns = @JoinColumn(name = "project_id"))
-//    @MapKeyJoinColumn(name = "user_id")
-//    @ElementCollection
-//    private Map<Project, User> projectUserMap = new HashMap<>();
-
-//    public Map<Project, User> getProjectUserMap() {
-//        return projectUserMap;
-//    }
-//
-//    public void setProjectUserMap(Map<Project, User> projectUserMap) {
-//        this.projectUserMap = projectUserMap;
-//    }
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<ProjectUserRoleLink> projectUserRoleLinks;
 
     public Long getId() {
         return id;
@@ -51,4 +32,13 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+        return projectUserRoleLinks;
+    }
+
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
+    }
+
 }

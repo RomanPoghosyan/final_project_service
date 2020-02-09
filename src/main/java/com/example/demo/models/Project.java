@@ -16,19 +16,8 @@ public class Project {
 
     private String name;
 
-//    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    private List<ProjectUserRoleLink> projectUserRoleLinks = new ArrayList<>();
-
-//    @ManyToMany(mappedBy="projects", targetEntity=User.class)
-//    private Collection<User> users = new ArrayList<User>();
-
-
-//    @JoinTable(name = "USER_PROJECT_ROLE")
-//            inverseJoinColumns = @JoinColumn(name = "user_id"),
-//            joinColumns = @JoinColumn(name = "project_id"))
-//    @MapKeyJoinColumn(name = "project_id")
-//    @ElementCollection
-//    private Map<Role, User> roleUserHashMap = new HashMap<>();
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<ProjectUserRoleLink> projectUserRoleLinks = new ArrayList<>();
 
     @OneToMany
     @JoinColumn(name = "project_id")
@@ -50,14 +39,6 @@ public class Project {
         this.name = name;
     }
 
-//    public Map<Role, User> getRoleUserHashMap() {
-//        return roleUserHashMap;
-//    }
-//
-//    public void setRoleUserHashMap(Map<Role, User> roleUserHashMap) {
-//        this.roleUserHashMap = roleUserHashMap;
-//    }
-
     @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
@@ -65,5 +46,14 @@ public class Project {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @JsonIgnore
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+        return projectUserRoleLinks;
+    }
+
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
     }
 }

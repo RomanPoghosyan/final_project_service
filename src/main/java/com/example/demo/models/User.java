@@ -27,35 +27,15 @@ public class User {
 
     private String password;
 
-//    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    private List<ProjectUserRoleLink> projectUserRoleLinks;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<ProjectUserRoleLink> projectUserRoleLinks;
 
-//    @ManyToMany (targetEntity=Role.class)
-//    @JoinTable(name="USER_PROJECT_ROLE",
-//            joinColumns=@JoinColumn(name="USER_ID"),
-//            inverseJoinColumns=@JoinColumn(name="ROLE_ID"))
-//
-//    private Collection<Role> roles;
-//
-//    @ManyToMany (targetEntity=Project.class)
-//    @JoinTable(name="USER_PROJECT_ROLE",
-//            joinColumns=@JoinColumn(name="USER_ID"),
-//            inverseJoinColumns=@JoinColumn(name="PROJECT_ID"))
-//    private Collection<Project> projects;
-
-    @JoinTable(name = "USER_PROJECT_ROLE",
-            joinColumns = @JoinColumn(name = "user_id", unique = false),
-            inverseJoinColumns = @JoinColumn(name = "role_id", unique = false))
-    @MapKeyJoinColumn(name = "project_id", unique = false)
-    @ElementCollection
-    private Map<Project, Role> projectRoleMap = new HashMap<>();
-
-    public Map<Project, Role> getProjectRoleMap() {
-        return projectRoleMap;
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+        return projectUserRoleLinks;
     }
 
-    public void setProjectRoleMap(Map<Project, Role> projectRoleMap) {
-        this.projectRoleMap = projectRoleMap;
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
     }
 
     @OneToMany

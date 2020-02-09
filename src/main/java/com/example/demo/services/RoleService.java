@@ -27,12 +27,5 @@ public class RoleService {
     public Optional<Role> findById ( Long id ) {
         return roleRepository.findById(id);
     }
-
-
-
-
-//    public Optional<Project> findByUserId (Long id) {
-//        return projectRepository.findByProjectUserRoleLinks(id);
-//    }
 }
 
