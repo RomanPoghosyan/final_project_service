@@ -18,7 +18,7 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(UserAlreadyExists.class)
     public ResponseEntity<BadResponse> userAlreadyExistsException(){
-        return new ResponseEntity<>(new BadResponse(Arrays.asList("User already exists")), HttpStatus.ALREADY_REPORTED);
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("User already exists")), HttpStatus.CONFLICT);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(BadCredentialsException.class)
@@ -29,5 +29,10 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(Unauthorized.class)
     public ResponseEntity<BadResponse> unauthorized(){
         return new ResponseEntity<>(new BadResponse(Arrays.asList("Unauthorized")), HttpStatus.UNAUTHORIZED);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(ProjectNotFound.class)
+    public ResponseEntity<BadResponse> projectNotFoundException(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Project not found")), HttpStatus.NOT_FOUND);
     }
 }

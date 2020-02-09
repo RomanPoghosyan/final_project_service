@@ -46,7 +46,7 @@ public class ProjectService {
         return savedProject;
     }
 
-    public Project save (Project project) {
+    public Project save(Project project) {
         return projectRepository.save(project);
     }
 
