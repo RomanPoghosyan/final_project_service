@@ -1,14 +1,10 @@
 package com.example.demo.controllers;
 
 
-import com.example.demo.auth.CustomUser;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.Project;
-import com.example.demo.models.Role;
-import com.example.demo.models.User;
 import com.example.demo.models.responses.OkResponse;
 import com.example.demo.models.responses.Response;
-import com.example.demo.repos.UserRepository;
 import com.example.demo.services.ProjectService;
 import com.example.demo.services.RoleService;
 import com.example.demo.services.UserService;
@@ -16,11 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 import java.util.Optional;
 
 @RestController

@@ -1,6 +1,7 @@
 package com.example.demo.models.requests;
 
 import com.example.demo.models.Project;
+import com.example.demo.models.Task;
 import com.example.demo.models.TaskStatus;
 import com.example.demo.models.User;
 
@@ -9,13 +10,12 @@ public class TaskRequest {
 
     private String description;
 
-    private TaskStatus task_status;
+    //TODO to implement Task Status for get id
+    private TaskStatus task_status_id;
 
-    private Project project;
+    private Long project_id;
 
-    private User assignor;
-
-    private User assignee;
+    private Long assignee_id;
 
     public String getTitle() {
         return title;
@@ -33,35 +33,27 @@ public class TaskRequest {
         this.description = description;
     }
 
-    public TaskStatus getTask_status() {
-        return task_status;
+    public TaskStatus getTask_status_id() {
+        return task_status_id;
     }
 
-    public void setTask_status(TaskStatus task_status) {
-        this.task_status = task_status;
+    public void setTask_status_id(TaskStatus task_status_id) {
+        this.task_status_id = task_status_id;
     }
 
-    public Project getProject() {
-        return project;
+    public Long getProject_id() {
+        return project_id;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProject_id(Long project_id) {
+        this.project_id = project_id;
     }
 
-    public User getAssignor() {
-        return assignor;
+    public Long getAssignee_id() {
+        return assignee_id;
     }
 
-    public void setAssignor(User assignor) {
-        this.assignor = assignor;
-    }
-
-    public User getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(User assignee) {
-        this.assignee = assignee;
+    public void setAssignee_id(Long assignee_id) {
+        this.assignee_id = assignee_id;
     }
 }

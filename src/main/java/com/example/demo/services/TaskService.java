@@ -1,8 +1,10 @@
 package com.example.demo.services;
 
 import com.example.demo.auth.CustomUser;
+import com.example.demo.models.Project;
 import com.example.demo.models.Task;
 import com.example.demo.models.User;
+import com.example.demo.models.requests.TaskRequest;
 import com.example.demo.repos.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,18 +19,27 @@ import java.util.Optional;
 public class TaskService {
     private TaskRepository taskRepository;
     private UserService userService;
+    private ProjectService projectService;
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserService userService) {
+    public TaskService(TaskRepository taskRepository, UserService userService, ProjectService projectService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
+        this.projectService = projectService;
     }
 
 
 
-    public Task save (Task task, Principal principal ) {
-        System.out.println(principal.getName());
+    public Task save (TaskRequest taskRequest, Principal principal ) {
         Optional<User> user = userService.findByUsername(principal.getName());
+        Task task = new Task();
+        task.setTitle(taskRequest.getTitle());
+        task.setDescription(taskRequest.getDescription());
+        task.setTask_status(taskRequest.getTask_status_id());
         task.setAssignor(user.get());
+        Optional<Project> project = projectService.findById(taskRequest.getProject_id());
+        task.setProject(project.get());                                                     
+        Optional<User> assignee = userService.findById(taskRequest.getAssignee_id());
+        task.setAssignee(assignee.get());
         return taskRepository.save (task);
     }
 
