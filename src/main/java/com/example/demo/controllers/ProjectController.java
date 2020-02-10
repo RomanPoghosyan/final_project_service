@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.Project;
 import com.example.demo.models.Role;

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -23,9 +24,14 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Response> save (@RequestBody TaskRequest taskRequest, Principal principal) {
+    public ResponseEntity<Response> save (@RequestBody TaskRequest taskRequest, Principal principal) throws Exception {
         taskService.save(taskRequest, principal);
         return new ResponseEntity<>(new OkResponse(taskRequest), HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public ResponseEntity<Response> findByProjectId ( @RequestBody Long projectId ) {
+        List<Task> tasks = taskService.findByProjectId(projectId);
+        return new ResponseEntity<>(new OkResponse(tasks), HttpStatus.OK);
+    }
 }
