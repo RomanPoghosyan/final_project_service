@@ -1,17 +1,24 @@
 package com.example.demo.services;
 
 import com.example.demo.auth.CustomUser;
+import com.example.demo.exceptions.ProjectNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.Task;
 import com.example.demo.models.User;
 import com.example.demo.models.requests.TaskRequest;
+import com.example.demo.models.responses.BadResponse;
+import com.example.demo.models.responses.OkResponse;
 import com.example.demo.repos.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,18 +36,26 @@ public class TaskService {
 
 
 
-    public Task save (TaskRequest taskRequest, Principal principal ) {
+    public ResponseEntity<?> save (TaskRequest taskRequest, Principal principal ) throws Exception {
         Optional<User> user = userService.findByUsername(principal.getName());
         Task task = new Task();
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
         task.setTask_status(taskRequest.getTask_status_id());
-        task.setAssignor(user.get());
+        if (user.isPresent()) {
+            task.setAssignor(user.get());
+        } else {
+            throw new UserNotFound();
+        }
         Optional<Project> project = projectService.findById(taskRequest.getProject_id());
-        task.setProject(project.get());                                                     
         Optional<User> assignee = userService.findById(taskRequest.getAssignee_id());
-        task.setAssignee(assignee.get());
-        return taskRepository.save (task);
+        if ( project.isPresent() && assignee.isPresent() ) {
+            task.setProject(project.get());
+            task.setAssignee(assignee.get());
+        } else {
+            throw new ProjectNotFound();
+        }
+        return new ResponseEntity<>(new OkResponse(taskRepository.save (task)), HttpStatus.CREATED);
     }
 
     public List<Task> findByAssigneeId (Long userId) {

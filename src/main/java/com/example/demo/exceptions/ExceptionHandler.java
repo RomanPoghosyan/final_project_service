@@ -30,4 +30,9 @@ public class ExceptionHandler {
     public ResponseEntity<BadResponse> unauthorized(){
         return new ResponseEntity<>(new BadResponse(Arrays.asList("Unauthorized")), HttpStatus.UNAUTHORIZED);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(ProjectNotFound.class)
+    public ResponseEntity<BadResponse> projectNotFoundException () {
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Project not found")), HttpStatus.UNAUTHORIZED);
+    }
 }
