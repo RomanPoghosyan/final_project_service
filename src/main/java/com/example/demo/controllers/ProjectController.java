@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.models.Project;
+import com.example.demo.models.Role;
+import com.example.demo.models.User;
 import com.example.demo.models.responses.OkResponse;
 import com.example.demo.models.responses.Response;
 import com.example.demo.services.ProjectService;
@@ -31,9 +33,9 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<Response> getById(@PathVariable Long projectId) {
+    public ResponseEntity<Response> getProjectById(@PathVariable Long projectId) throws ProjectNotFound {
         Optional<Project> project = projectService.findById(projectId);
-        return new ResponseEntity<>(new OkResponse(project.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new OkResponse(project.orElseThrow(ProjectNotFound::new)), HttpStatus.OK);
     }
 
 //    @GetMapping("/all/{userId}")
@@ -42,7 +44,7 @@ public class ProjectController {
 //    }
 
     @PostMapping(consumes={"application/json"})
-    public ResponseEntity<Response> add(@RequestBody Project project, Authentication authentication) throws UserAlreadyExists {
+    public ResponseEntity<Response> addProject(@RequestBody Project project, Authentication authentication) {
         return new ResponseEntity<>(new OkResponse(projectService.add(project, authentication)), HttpStatus.OK);
     }
 }
