@@ -15,18 +15,4 @@ public class TaskControllerTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
     }
-
-    @Mock
-    TaskService taskService;
-
-    @Mock
-    Principal principal;
-
-    @Test
-    public void addTask() throws Exception {
-//        TaskController taskController = new TaskController(taskService);
-//        TaskRequest taskRequest = new TaskRequest();
-//        taskController.save(taskRequest, principal);
-//        verify(taskService).save(taskRequest, principal);
-    }
 }
