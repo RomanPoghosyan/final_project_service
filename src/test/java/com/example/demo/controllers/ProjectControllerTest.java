@@ -49,8 +49,7 @@ public class ProjectControllerTest {
 
         when(projectService.findById(1L)).thenReturn(Optional.of(project));
         ResponseEntity<Response> actual = projectController.getProjectById(1L);
-        Project expected = project;
-        Assert.assertEquals(Objects.requireNonNull(actual.getBody()).getBody(), expected);
+        Assert.assertEquals(Objects.requireNonNull(actual.getBody()).getBody(), project);
     }
 
     @Test(expected = ProjectNotFound.class)
@@ -83,7 +82,6 @@ public class ProjectControllerTest {
     @Test(expected = ProjectsByUserIdNotFound.class)
     public void testFindAllByUserIdFail() throws ProjectsByUserIdNotFound {
         ProjectController projectController = new ProjectController(projectService, userService, roleService);
-        List<Project> projects = Arrays.asList(new Project(), new Project());
         when(projectService.findAllByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
 
         projectController.findAllByUserId(1L);

@@ -1,22 +1,21 @@
 package com.example.demo.services;
 
-import com.example.demo.controllers.ProjectController;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
 import com.example.demo.models.User;
-import com.example.demo.models.responses.Response;
 import com.example.demo.repos.ProjectRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,8 +49,7 @@ public class ProjectServiceTest {
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         Optional<Project> actual = projectService.findById(1L);
-        Project expected = project;
-        Assert.assertEquals(actual.get(), expected);
+        Assert.assertEquals(actual, Optional.of(project));
     }
 
     @Test
