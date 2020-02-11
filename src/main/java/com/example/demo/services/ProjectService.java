@@ -1,6 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.auth.CustomUser;
+import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -8,12 +8,11 @@ import com.example.demo.models.User;
 import com.example.demo.repos.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,11 +37,7 @@ public class ProjectService {
         Project savedProject = projectRepository.save(project);
         Role role = roleService.findById(1L).get();
         User user = userService.findByUsername(authentication.getName()).get();
-        ProjectUserRoleLink purl = new ProjectUserRoleLink();
-        purl.setRole(role);
-        purl.setUser(user);
-        purl.setProject(savedProject);
-        projectUserRoleLinkService.save(purl);
+        projectUserRoleLinkService.add(savedProject, user, role);
         return savedProject;
     }
 
@@ -54,11 +49,17 @@ public class ProjectService {
         return projectRepository.findById(id);
     }
 
+    public List<Project> findAllByUserId (Long id) throws ProjectsByUserIdNotFound {
+        if (projectUserRoleLinkService.findAllByUserId(id).isPresent()) {
+            List<ProjectUserRoleLink> projectUserRoleLinks = projectUserRoleLinkService.findAllByUserId(id).get();
 
-
-
-//    public Optional<Project> findByUserId (Long id) {
-//        return projectRepository.findByProjectUserRoleLinks(id);
-//    }
+            return projectUserRoleLinks
+                    .stream()
+                    .map(ProjectUserRoleLink::getProject)
+                    .collect(Collectors.toList());
+        } else {
+            throw new ProjectsByUserIdNotFound();
+        }
+    }
 }
 
