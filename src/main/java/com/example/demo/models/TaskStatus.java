@@ -17,4 +17,7 @@ public class TaskStatus {
     @OneToMany
     @JoinColumn(name = "task_status_id")
     private List<Task> tasks;
+
+    @ManyToOne
+    private Project project;
 }
