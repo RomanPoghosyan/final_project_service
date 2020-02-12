@@ -73,11 +73,9 @@ public class Authentication {
         this.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         final String token = jwtHelper.generateToken(userDetails);
-
         Map<String, String> body = new HashMap<String, String>() {{
             put("token", token);
         }};
-
         return new ResponseEntity<>(new OkResponse(body), HttpStatus.ACCEPTED);
     }
 
