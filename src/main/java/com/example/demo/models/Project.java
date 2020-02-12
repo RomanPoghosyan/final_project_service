@@ -23,6 +23,10 @@ public class Project {
     @JoinColumn(name = "project_id")
     private List<Task> tasks;
 
+    @OneToMany
+    @JoinColumn(name = "task_status_id")
+    private List<TaskStatus> taskStatuses;
+
     public Long getId() {
         return id;
     }
