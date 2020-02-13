@@ -16,8 +16,8 @@ public class TaskStatus {
 
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "task_status_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task_status", cascade = {CascadeType.REMOVE})
+//    @JoinColumn(name = "task_status_id")
     private List<Task> tasks;
 
     @ManyToOne
