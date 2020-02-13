@@ -2,12 +2,15 @@ package com.example.demo.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.time.LocalDateTime;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 @Table(name = "users")
@@ -45,7 +48,7 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Comment> comments;
 
-//    TODO is everything ok?
+    //    TODO is everything ok?
     @OneToMany
     @JoinColumn(name = "assignor_id")
     private List<Task> created_tasks;
@@ -61,6 +64,21 @@ public class User {
     @OneToMany
     @JoinColumn(name = "notified_to_id")
     private List<Notification> notifications_to;
+
+    @CreationTimestamp
+    @Temporal(TIMESTAMP)
+    private Date created_at;
+
+    @UpdateTimestamp
+    @Temporal(TIMESTAMP)
+    private Date changed_at;
+
+    private String location;
+
+    private String phoneNumber;
+
+
+
 
     public Long getId() {
         return id;
