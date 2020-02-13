@@ -1,10 +1,8 @@
 package com.example.demo.controllers;
-import com.example.demo.auth.CustomUser;
 import com.example.demo.models.Task;
-import com.example.demo.models.User;
-import com.example.demo.models.requests.TaskRequest;
-import com.example.demo.models.responses.OkResponse;
-import com.example.demo.models.responses.Response;
+import com.example.demo.dto.requests.TaskRequest;
+import com.example.demo.dto.responses.OkResponse;
+import com.example.demo.dto.responses.Response;
 import com.example.demo.services.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

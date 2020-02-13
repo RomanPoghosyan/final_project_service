@@ -2,8 +2,10 @@ package com.example.demo.controllers;
 
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
+import com.example.demo.exceptions.RoleNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
-import com.example.demo.models.responses.Response;
+import com.example.demo.dto.responses.Response;
 import com.example.demo.services.ProjectService;
 import com.example.demo.services.RoleService;
 import com.example.demo.services.UserService;
@@ -47,7 +49,7 @@ public class ProjectControllerTest {
         ProjectController projectController = new ProjectController(projectService, userService, roleService);
         Project project = new Project();
 
-        when(projectService.findById(1L)).thenReturn(Optional.of(project));
+        when(projectService.findById(1L)).thenReturn(project);
         ResponseEntity<Response> actual = projectController.getProjectById(1L);
         Assert.assertEquals(Objects.requireNonNull(actual.getBody()).getBody(), project);
     }
@@ -56,12 +58,12 @@ public class ProjectControllerTest {
     public void testGetByIdFail() throws Exception {
         ProjectController projectController = new ProjectController(projectService, userService, roleService);
 
-        when(projectService.findById(2L)).thenReturn(Optional.empty());
+        when(projectService.findById(2L)).thenThrow(new ProjectNotFound());
         projectController.getProjectById(2L);
     }
 
     @Test
-    public void testAddProjectSuccess() {
+    public void testAddProjectSuccess() throws UserNotFound, RoleNotFound {
         ProjectController projectController = new ProjectController(projectService, userService, roleService);
         Project project = new Project();
 

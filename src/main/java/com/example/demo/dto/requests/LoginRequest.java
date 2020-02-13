@@ -1,4 +1,4 @@
-package com.example.demo.models.requests;
+package com.example.demo.dto.requests;
 
 public class LoginRequest {
     private String username;

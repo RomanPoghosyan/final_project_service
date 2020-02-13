@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.exceptions.UserAlreadyExists;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
 import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,19 @@ public class UserService {
         }
     }
 
-    public Optional<User> findById (Long id) {
-        return userRepository.findById(id);
+    public User findById (Long id) throws UserNotFound {
+        if(userRepository.findById(id).isPresent()){
+            return userRepository.findById(id).get();
+        } else {
+           throw new UserNotFound();
+        }
     }
 
-    public Optional<User> findByUsername ( String username ) {
-        return userRepository.findByUsername(username);
+    public User findByUsername ( String username ) throws UserNotFound {
+        if(userRepository.findByUsername(username).isPresent()){
+            return userRepository.findByUsername(username).get();
+        } else {
+            throw new UserNotFound();
+        }
     }
 }

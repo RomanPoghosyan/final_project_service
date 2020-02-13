@@ -1,6 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
+import com.example.demo.exceptions.RoleNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -33,10 +36,10 @@ public class ProjectService {
     }
 
 
-    public Project add(Project project, Authentication authentication) {
+    public Project add(Project project, Authentication authentication) throws UserNotFound, RoleNotFound {
         Project savedProject = projectRepository.save(project);
-        Role role = roleService.findById(1L).get();
-        User user = userService.findByUsername(authentication.getName()).get();
+        Role role = roleService.findById(1L);
+        User user = userService.findByUsername(authentication.getName());
         projectUserRoleLinkService.add(savedProject, user, role);
         return savedProject;
     }
@@ -45,8 +48,12 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Optional<Project> findById ( Long id ) {
-        return projectRepository.findById(id);
+    public Project findById ( Long id ) throws ProjectNotFound {
+        if(projectRepository.findById(id).isPresent()) {
+            return projectRepository.findById(id).get();
+        } else {
+            throw new ProjectNotFound();
+        }
     }
 
     public List<Project> findAllByUserId (Long id) throws ProjectsByUserIdNotFound {

@@ -1,4 +1,4 @@
-package com.example.demo.models.requests;
+package com.example.demo.dto.requests;
 
 import com.example.demo.models.Project;
 import com.example.demo.models.Task;
