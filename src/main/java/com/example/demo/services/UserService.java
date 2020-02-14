@@ -7,8 +7,6 @@ import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
 
@@ -28,18 +26,10 @@ public class UserService {
     }
 
     public User findById (Long id) throws UserNotFound {
-        if(userRepository.findById(id).isPresent()){
-            return userRepository.findById(id).get();
-        } else {
-           throw new UserNotFound();
-        }
+        return userRepository.findById(id).orElseThrow(UserNotFound::new);
     }
 
     public User findByUsername ( String username ) throws UserNotFound {
-        if(userRepository.findByUsername(username).isPresent()){
-            return userRepository.findByUsername(username).get();
-        } else {
-            throw new UserNotFound();
-        }
+        return userRepository.findByUsername(username).orElseThrow(UserNotFound::new);
     }
 }

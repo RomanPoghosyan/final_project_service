@@ -1,4 +1,5 @@
 package com.example.demo.services;
+import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.models.Task;
 import com.example.demo.repos.TaskRepository;
 import org.junit.Assert;
@@ -24,19 +25,18 @@ public class TaskServiceTest {
     ProjectService projectService;
 
     @Test
-    public void testFindById () {
+    public void testFindById () throws TaskNotFound {
         TaskService taskService = new TaskService(taskRepository, userService, projectService);
         Task task = new Task();
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
-        Optional<Task> actual = taskService.findById(1L);
-        Assert.assertEquals(actual.get(), task);
+        Task actual = taskService.findById(1L);
+        Assert.assertEquals(actual, task);
     }
 
-    @Test
-    public void testFindByIdFail() {
+    @Test(expected = TaskNotFound.class)
+    public void testFindByIdFail() throws TaskNotFound {
         TaskService taskService = new TaskService(taskRepository, userService, projectService);
         when(taskRepository.findById(2L)).thenReturn(Optional.empty());
-        Optional<Task> actual = taskService.findById(2L);
-        Assert.assertEquals(actual, Optional.empty());
+        taskService.findById(2L);
     }
 }

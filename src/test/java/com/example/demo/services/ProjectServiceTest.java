@@ -111,7 +111,7 @@ public class ProjectServiceTest {
         ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
         projectUserRoleLink.setProject(project);
         List<ProjectUserRoleLink> projectUserRoleLinks = Collections.singletonList(projectUserRoleLink);
-        when(projectUserRoleLinkService.findAllByUserId(1L)).thenReturn(Optional.of(projectUserRoleLinks));
+        when(projectUserRoleLinkService.findAllByUserId(1L)).thenReturn(projectUserRoleLinks);
 
         List<Project> actual = projectService.findAllByUserId(1L);
         List<Project> expected = Collections.singletonList(project);
@@ -121,7 +121,7 @@ public class ProjectServiceTest {
     @Test(expected = ProjectsByUserIdNotFound.class)
     public void testFindAllByUserIdFail() throws ProjectsByUserIdNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
-        when(projectUserRoleLinkService.findAllByUserId(1L)).thenReturn(Optional.empty());
+        when(projectUserRoleLinkService.findAllByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
 
         projectService.findAllByUserId(1L);
     }
