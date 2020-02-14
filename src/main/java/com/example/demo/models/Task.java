@@ -1,4 +1,6 @@
 package com.example.demo.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -25,9 +27,11 @@ public class Task {
     private Project project;
 
     @ManyToOne
+    @JsonIgnore
     private User assignor;
 
     @ManyToOne
+    @JsonIgnore
     private User assignee;
 
     @OneToMany

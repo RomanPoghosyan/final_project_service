@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -54,6 +55,14 @@ public class Authentication {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         CustomUser user = (CustomUser) securityContext.getAuthentication().getPrincipal();
         return new ResponseEntity<>(new OkResponse(new MeResponse(user.getId(), user.getEmail(), user.getUsername())), HttpStatus.OK);
+    }
+
+    @GetMapping("/userData")
+    public ResponseEntity<Response> getCurrentUserData() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        String username = ((CustomUser) securityContext.getAuthentication().getPrincipal()).getUsername();
+        Optional<User> user = userService.findByUsername(username);
+        return new ResponseEntity<>(new OkResponse((user)), HttpStatus.OK);
     }
 
     @PostMapping("/signup")

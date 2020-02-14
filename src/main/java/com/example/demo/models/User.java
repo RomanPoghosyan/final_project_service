@@ -1,13 +1,15 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 @Table(name = "users")
@@ -28,11 +30,13 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
 
+    @JsonIgnore
     public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
         return projectUserRoleLinks;
     }
@@ -61,6 +65,50 @@ public class User {
     @OneToMany
     @JoinColumn(name = "notified_to_id")
     private List<Notification> notifications_to;
+
+    @CreationTimestamp
+    @Temporal(TIMESTAMP)
+    private Date created_at;
+
+    @UpdateTimestamp
+    @Temporal(TIMESTAMP)
+    private Date updated_at;
+
+    private String location;
+
+    private String phoneNumber;
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public Date getChanged_at() {
+        return updated_at;
+    }
+
+    public void setChanged_at(Date changed_at) {
+        this.updated_at = changed_at;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public Long getId() {
         return id;

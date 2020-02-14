@@ -29,9 +29,11 @@ public class TaskController {
         return new ResponseEntity<>(new OkResponse(taskRequest), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Response> findByProjectId ( @RequestBody Long projectId ) {
+    @GetMapping("byProject/{projectId}")
+    public ResponseEntity<Response> findByProjectId(@PathVariable Long projectId) {
         List<Task> tasks = taskService.findByProjectId(projectId);
         return new ResponseEntity<>(new OkResponse(tasks), HttpStatus.OK);
     }
+
+
 }
