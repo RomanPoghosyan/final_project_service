@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -49,24 +48,16 @@ public class ProjectService {
     }
 
     public Project findById ( Long id ) throws ProjectNotFound {
-        if(projectRepository.findById(id).isPresent()) {
-            return projectRepository.findById(id).get();
-        } else {
-            throw new ProjectNotFound();
-        }
+            return projectRepository.findById(id).orElseThrow(ProjectNotFound::new);
     }
 
     public List<Project> findAllByUserId (Long id) throws ProjectsByUserIdNotFound {
-        if (projectUserRoleLinkService.findAllByUserId(id).isPresent()) {
-            List<ProjectUserRoleLink> projectUserRoleLinks = projectUserRoleLinkService.findAllByUserId(id).get();
+        List<ProjectUserRoleLink> projectUserRoleLinks = projectUserRoleLinkService.findAllByUserId(id);
 
-            return projectUserRoleLinks
-                    .stream()
-                    .map(ProjectUserRoleLink::getProject)
-                    .collect(Collectors.toList());
-        } else {
-            throw new ProjectsByUserIdNotFound();
-        }
+        return projectUserRoleLinks
+                .stream()
+                .map(ProjectUserRoleLink::getProject)
+                .collect(Collectors.toList());
     }
 }
 

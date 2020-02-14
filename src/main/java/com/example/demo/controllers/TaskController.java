@@ -1,4 +1,5 @@
 package com.example.demo.controllers;
+import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.models.Task;
 import com.example.demo.dto.requests.TaskRequest;
 import com.example.demo.dto.responses.OkResponse;
@@ -28,10 +29,8 @@ public class TaskController {
     }
 
     @GetMapping("byProject/{projectId}")
-    public ResponseEntity<Response> findByProjectId(@PathVariable Long projectId) {
+    public ResponseEntity<Response> findByProjectId(@PathVariable Long projectId) throws TaskNotFound {
         List<Task> tasks = taskService.findByProjectId(projectId);
         return new ResponseEntity<>(new OkResponse(tasks), HttpStatus.OK);
     }
-
-
 }

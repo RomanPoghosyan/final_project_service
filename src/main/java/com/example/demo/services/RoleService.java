@@ -27,11 +27,7 @@ public class RoleService {
     }
 
     public Role findById ( Long id ) throws RoleNotFound {
-        if(roleRepository.findById(id).isPresent()){
-            return roleRepository.findById(id).get();
-        } else {
-            throw new RoleNotFound();
-        }
+        return roleRepository.findById(id).orElseThrow(RoleNotFound::new);
     }
 }
 
