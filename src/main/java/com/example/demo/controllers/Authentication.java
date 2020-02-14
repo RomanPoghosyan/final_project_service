@@ -57,14 +57,6 @@ public class Authentication {
         return new ResponseEntity<>(new OkResponse(new MeResponse(user.getId(), user.getEmail(), user.getUsername())), HttpStatus.OK);
     }
 
-    @GetMapping("/userData")
-    public ResponseEntity<Response> getCurrentUserData() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String username = ((CustomUser) securityContext.getAuthentication().getPrincipal()).getUsername();
-        Optional<User> user = userService.findByUsername(username);
-        return new ResponseEntity<>(new OkResponse((user)), HttpStatus.OK);
-    }
-
     @PostMapping("/signup")
     public ResponseEntity<Response> signup(@RequestBody SignupRequest signupRequest) throws Exception {
         User user = new User();
