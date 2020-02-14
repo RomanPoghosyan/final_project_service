@@ -24,7 +24,7 @@ public class Project {
     private List<Task> tasks;
 
     @OneToMany
-    @JoinColumn(name = "task_status_id")
+    @JoinColumn(name = "project_id")
     private List<TaskStatus> taskStatuses;
 
     public Long getId() {

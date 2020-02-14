@@ -21,6 +21,7 @@ public class Task {
     private List<MicroTask> micro_tasks;
 
     @ManyToOne
+    @JoinColumn(name = "task_status_id", nullable = false)
     private TaskStatus task_status;
 
     @ManyToOne

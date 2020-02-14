@@ -1,4 +1,4 @@
-package com.example.demo.models.responses;
+package com.example.demo.dto.responses;
 
 
 import java.util.ArrayList;
