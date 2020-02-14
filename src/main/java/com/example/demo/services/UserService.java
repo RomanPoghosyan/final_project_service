@@ -30,16 +30,21 @@ public class UserService {
     public User findById (Long id) throws UserNotFound {
         if(userRepository.findById(id).isPresent()){
             return userRepository.findById(id).get();
-        } else {
-           throw new UserNotFound();
         }
+        throw new UserNotFound();
     }
 
     public User findByUsername ( String username ) throws UserNotFound {
         if(userRepository.findByUsername(username).isPresent()){
             return userRepository.findByUsername(username).get();
-        } else {
-            throw new UserNotFound();
         }
+        throw new UserNotFound();
+    }
+
+    public User findByEmail ( String email ) throws UserNotFound {
+        if ( userRepository.findByEmail(email).isPresent() ) {
+            return userRepository.findByEmail(email).get();
+        }
+        throw new UserNotFound();
     }
 }

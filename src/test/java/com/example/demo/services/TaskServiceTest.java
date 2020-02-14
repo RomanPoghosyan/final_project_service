@@ -1,10 +1,10 @@
 package com.example.demo.services;
+import com.example.demo.dto.requests.TaskRequest;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.Task;
 import com.example.demo.models.User;
-import com.example.demo.models.requests.TaskRequest;
 import com.example.demo.repos.TaskRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,9 +68,9 @@ public class TaskServiceTest {
         taskRequest.setAssignee_id(1L);
         taskRequest.setProject_id(1L);
         Project project = new Project();
-        when (userService.findByUsername("Tigran")).thenReturn(Optional.of(user));
-        when (userService.findById(1L)).thenReturn(Optional.of(user));
-        when(projectService.findById(1L)).thenReturn(Optional.of(project));
+        when (userService.findByUsername("Tigran")).thenReturn(user);
+        when (userService.findById(1L)).thenReturn(user);
+        when(projectService.findById(1L)).thenReturn(project);
         when (principal.getName()).thenReturn("Tigran");
         taskService.save(taskRequest, principal);
         verify(taskService).save(taskRequest, principal);
@@ -92,7 +92,7 @@ public class TaskServiceTest {
         TaskService taskService = new TaskService(taskRepository, userService, projectService);
         TaskRequest taskRequest = new TaskRequest();
         User user = new User();
-        when (userService.findByUsername("Tigran")).thenReturn(Optional.of(user));
+        when (userService.findByUsername("Tigran")).thenReturn(user);
         when (principal.getName()).thenReturn("Tigran");
         taskService.save(taskRequest, principal);
         verify(taskService).save(taskRequest, principal);

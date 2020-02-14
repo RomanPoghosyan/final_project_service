@@ -3,10 +3,15 @@ package com.example.demo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.*;
 
 import static javax.persistence.TemporalType.TIMESTAMP;
@@ -49,7 +54,7 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Comment> comments;
 
-//    TODO is everything ok?
+    //    TODO is everything ok?
     @OneToMany
     @JoinColumn(name = "assignor_id")
     private List<Task> created_tasks;
@@ -67,30 +72,32 @@ public class User {
     private List<Notification> notifications_to;
 
     @CreationTimestamp
-    @Temporal(TIMESTAMP)
-    private Date created_at;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate created_at;
 
     @UpdateTimestamp
-    @Temporal(TIMESTAMP)
-    private Date updated_at;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate updated_at;
 
     private String location;
 
     private String phoneNumber;
 
-    public Date getCreated_at() {
+    public LocalDate getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDate created_at) {
         this.created_at = created_at;
     }
 
-    public Date getChanged_at() {
+    public LocalDate getChanged_at() {
         return updated_at;
     }
 
-    public void setChanged_at(Date changed_at) {
+    public void setChanged_at(LocalDate changed_at) {
         this.updated_at = changed_at;
     }
 
