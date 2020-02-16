@@ -6,17 +6,16 @@ import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.exceptions.RoleNotFound;
 import com.example.demo.exceptions.UserNotFound;
-import com.example.demo.models.Project;
-import com.example.demo.models.ProjectUserRoleLink;
-import com.example.demo.models.Role;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
 import com.example.demo.repos.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -58,7 +57,7 @@ public class ProjectService {
         }
     }
 
-    public ProjectResponse findByIdForResponse ( Long id, Authentication authentication ) throws ProjectNotFound {
+    public ProjectResponse getFullProjectInfo(Long id, Authentication authentication ) throws ProjectNotFound {
         if(projectRepository.findById(id).isPresent()){
             Project project = projectRepository.findById(id).get();
             AtomicBoolean allow = new AtomicBoolean(false);
@@ -78,6 +77,10 @@ public class ProjectService {
                 projectResponse.setTaskStatuses(project.getTaskStatuses());
                 projectResponse.setTaskStatusesOrder(project.getTaskStatusesOrder());
                 return projectResponse;
+
+
+//                Map<Long, Project> projectMap = projectRepository.findById(1L)
+//                        .stream().collect(Collectors.toMap(Project::getId, Function.identity()));
             }else {
                 throw new ProjectNotFound();
             }

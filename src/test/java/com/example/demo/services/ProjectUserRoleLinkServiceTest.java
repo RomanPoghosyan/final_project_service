@@ -59,7 +59,7 @@ public class ProjectUserRoleLinkServiceTest {
     public void findByIdFail() throws ProjectUserRoleLinkNotFound {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
 
-        when(projectUserRoleLinkRepository.findById(1L)).thenThrow(new ProjectUserRoleLinkNotFound());
+        when(projectUserRoleLinkRepository.findById(1L)).thenReturn(Optional.empty());
 
         projectUserRoleLinkService.findById(1L);
     }
@@ -77,11 +77,11 @@ public class ProjectUserRoleLinkServiceTest {
         Assert.assertEquals(actual, expected);
     }
 
-    @Test
+    @Test(expected = ProjectsByUserIdNotFound.class)
     public void findAllByUserIdFail() throws ProjectsByUserIdNotFound {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
 
-        when(projectUserRoleLinkRepository.findByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
+        when(projectUserRoleLinkRepository.findByUserId(1L)).thenReturn(Optional.empty());
 
         projectUserRoleLinkService.findAllByUserId(1L);
     }
