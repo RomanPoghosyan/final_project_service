@@ -55,14 +55,13 @@ public class ProjectServiceTest {
         Assert.assertEquals(actual, project);
     }
 
-    @Test
+    @Test(expected = ProjectNotFound.class)
     public void testFindByIdFail() throws ProjectNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
 
         when(projectRepository.findById(2L)).thenReturn(Optional.empty());
 
-        Project actual = projectService.findById(2L);
-        Assert.assertEquals(actual, null);
+        projectService.findById(2L);
     }
 
     @Test
