@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 10000)
@@ -39,7 +38,7 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     @Transactional(readOnly = true)
     public ResponseEntity<Response> getProjectById(@PathVariable Long projectId, Authentication authentication) throws ProjectNotFound {
-        return new ResponseEntity<>(new OkResponse(projectService.findByIdForResponse(projectId, authentication)), HttpStatus.OK);
+        return new ResponseEntity<>(new OkResponse(projectService.getFullProjectInfo(projectId, authentication)), HttpStatus.OK);
     }
 
     @GetMapping("/all/{userId:\\d+}")
