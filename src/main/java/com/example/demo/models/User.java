@@ -83,7 +83,7 @@ public class User {
 
     private String location;
 
-    private String phoneNumber;
+    private String phone_number;
 
     public LocalDate getCreated_at() {
         return created_at;
@@ -93,12 +93,12 @@ public class User {
         this.created_at = created_at;
     }
 
-    public LocalDate getChanged_at() {
+    public LocalDate getUpdated_at() {
         return updated_at;
     }
 
-    public void setChanged_at(LocalDate changed_at) {
-        this.updated_at = changed_at;
+    public void setUpdated_at(LocalDate updated_at) {
+        this.updated_at = updated_at;
     }
 
     public String getLocation() {
@@ -110,11 +110,11 @@ public class User {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phone_number;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.phone_number = phoneNumber;
     }
 
     public Long getId() {

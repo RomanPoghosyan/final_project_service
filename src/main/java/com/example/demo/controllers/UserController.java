@@ -1,9 +1,11 @@
 package com.example.demo.controllers;
 
 import com.example.demo.auth.CustomUser;
+import com.example.demo.dto.requests.UserSettingsRequest;
 import com.example.demo.dto.responses.BadResponse;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
+import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
 import com.example.demo.services.UserService;
@@ -35,11 +37,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Response> getCurrentUserData(Authentication authentication) throws UserNotFound {
         User user = userService.findByUsername(authentication.getName());
-        return new ResponseEntity<>(new OkResponse((user)), HttpStatus.OK);
+        UserSettingsRequest userSettingsRequest = new UserSettingsRequest(user);
+        return new ResponseEntity<>(new OkResponse((userSettingsRequest)), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<Response> changeCurrentUserData(@RequestBody User user, Authentication authentication) throws UserNotFound {
+    public ResponseEntity<Response> changeCurrentUserData(@RequestBody User user, Authentication authentication) throws UserNotFound, UserAlreadyExists {
         User currentUser = userService.findByUsername(authentication.getName());
         if (!(currentUser.getUsername().equals(user.getUsername()))) {
             try {
@@ -61,6 +64,7 @@ public class UserController {
         currentUser.setLast_name(user.getLast_name());
         currentUser.setLocation(user.getLocation());
         currentUser.setPhoneNumber(user.getPhoneNumber());
+        userService.save(currentUser);
         return new ResponseEntity<>(new OkResponse(currentUser), HttpStatus.OK);
     }
 }

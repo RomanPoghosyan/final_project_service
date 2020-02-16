@@ -52,6 +52,7 @@ public class Project {
         this.tasks = tasks;
     }
 
+
     @JsonIgnore
     public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
         return projectUserRoleLinks;

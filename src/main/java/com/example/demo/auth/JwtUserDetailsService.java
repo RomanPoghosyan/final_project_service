@@ -25,7 +25,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         try{
             com.example.demo.models.User user = userService.findByUsername(username);
             return new CustomUser(user.getUsername(),user.getPassword(),new ArrayList<>(),
