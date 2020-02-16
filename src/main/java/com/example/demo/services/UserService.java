@@ -1,12 +1,11 @@
 package com.example.demo.services;
 
 import com.example.demo.exceptions.UserAlreadyExists;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
 import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,11 +25,11 @@ public class UserService {
         }
     }
 
-    public Optional<User> findById (Long id) {
-        return userRepository.findById(id);
+    public User findById (Long id) throws UserNotFound {
+        return userRepository.findById(id).orElseThrow(UserNotFound::new);
     }
 
-    public Optional<User> findByUsername ( String username ) {
-        return userRepository.findByUsername(username);
+    public User findByUsername ( String username ) throws UserNotFound {
+        return userRepository.findByUsername(username).orElseThrow(UserNotFound::new);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.exceptions.ProjectUserRoleLinkNotFound;
+import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -36,15 +38,12 @@ public class ProjectUserRoleLinkService {
         return projectUserRoleLinkRepository.save(purl);
     }
 
-    public Optional<ProjectUserRoleLink> findById ( Long id ) {
-        return projectUserRoleLinkRepository.findById(id);
+    public ProjectUserRoleLink findById ( Long id ) throws ProjectUserRoleLinkNotFound {
+        return projectUserRoleLinkRepository.findById(id).orElseThrow(ProjectUserRoleLinkNotFound::new);
     }
 
-
-
-
-    public Optional<List<ProjectUserRoleLink>> findAllByUserId (Long id) {
-        return projectUserRoleLinkRepository.findByUserId(id);
+    public List<ProjectUserRoleLink> findAllByUserId (Long id) throws ProjectsByUserIdNotFound {
+        return projectUserRoleLinkRepository.findByUserId(id).orElseThrow(ProjectsByUserIdNotFound::new);
     }
 }
 

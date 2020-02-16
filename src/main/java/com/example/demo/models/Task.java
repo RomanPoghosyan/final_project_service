@@ -1,4 +1,6 @@
 package com.example.demo.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -19,15 +21,18 @@ public class Task {
     private List<MicroTask> micro_tasks;
 
     @ManyToOne
+    @JoinColumn(name = "task_status_id", nullable = false)
     private TaskStatus task_status;
 
     @ManyToOne
     private Project project;
 
     @ManyToOne
+    @JsonIgnore
     private User assignor;
 
     @ManyToOne
+    @JsonIgnore
     private User assignee;
 
     @OneToMany

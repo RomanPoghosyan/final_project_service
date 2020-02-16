@@ -1,14 +1,18 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.*;
-import java.time.LocalDateTime;
 
 import static javax.persistence.TemporalType.TIMESTAMP;
 
@@ -31,11 +35,13 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
 
+    @JsonIgnore
     public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
         return projectUserRoleLinks;
     }
@@ -66,19 +72,50 @@ public class User {
     private List<Notification> notifications_to;
 
     @CreationTimestamp
-    @Temporal(TIMESTAMP)
-    private Date created_at;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate created_at;
 
     @UpdateTimestamp
-    @Temporal(TIMESTAMP)
-    private Date changed_at;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate updated_at;
 
     private String location;
 
     private String phoneNumber;
 
+    public LocalDate getCreated_at() {
+        return created_at;
+    }
 
+    public void setCreated_at(LocalDate created_at) {
+        this.created_at = created_at;
+    }
 
+    public LocalDate getChanged_at() {
+        return updated_at;
+    }
+
+    public void setChanged_at(LocalDate changed_at) {
+        this.updated_at = changed_at;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public Long getId() {
         return id;

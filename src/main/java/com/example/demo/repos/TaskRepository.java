@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskRepository extends CrudRepository<Task, Long> {
-    public List<Task> findByAssigneeId (Long userId);
-    public List<Task> findByAssignorId (Long userId);
-    public List<Task> findByProjectId ( Long projectId );
-    public Optional<Task> findById (Long taskId);
+    Optional<List<Task>> findByAssigneeId (Long userId);
+    Optional<List<Task>> findByAssignorId (Long userId);
+    Optional<List<Task>> findByProjectId ( Long projectId );
+    Optional<Task> findById (Long taskId);
 }

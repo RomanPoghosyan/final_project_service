@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.exceptions.ProjectUserRoleLinkNotFound;
+import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -41,53 +43,47 @@ public class ProjectUserRoleLinkServiceTest {
     }
 
     @Test
-    public void findByIdSuccess(){
+    public void findByIdSuccess() throws ProjectUserRoleLinkNotFound {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
         ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
 
         when(projectUserRoleLinkRepository.findById(1L)).thenReturn(Optional.of(projectUserRoleLink));
 
-        Optional<ProjectUserRoleLink> actual = projectUserRoleLinkService.findById(1L);
-        Optional<ProjectUserRoleLink> expected = Optional.of(projectUserRoleLink);
+        ProjectUserRoleLink actual = projectUserRoleLinkService.findById(1L);
+        ProjectUserRoleLink expected = projectUserRoleLink;
 
         Assert.assertEquals(actual, expected);
     }
 
-    @Test
-    public void findByIdFail(){
+    @Test(expected = ProjectUserRoleLinkNotFound.class)
+    public void findByIdFail() throws ProjectUserRoleLinkNotFound {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
 
-        when(projectUserRoleLinkRepository.findById(1L)).thenReturn(Optional.empty());
+        when(projectUserRoleLinkRepository.findById(1L)).thenThrow(new ProjectUserRoleLinkNotFound());
 
-        Optional<ProjectUserRoleLink> actual = projectUserRoleLinkService.findById(1L);
-        Optional<ProjectUserRoleLink> expected = Optional.empty();
-
-        Assert.assertEquals(actual, expected);
+        projectUserRoleLinkService.findById(1L);
     }
 
     @Test
-    public void findAllByUserIdSuccess(){
+    public void findAllByUserIdSuccess() throws ProjectsByUserIdNotFound {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
         List<ProjectUserRoleLink> projectUserRoleLinks = Arrays.asList(new ProjectUserRoleLink(), new ProjectUserRoleLink());
 
         when(projectUserRoleLinkRepository.findByUserId(1L)).thenReturn(Optional.of(projectUserRoleLinks));
 
-        Optional<List<ProjectUserRoleLink>> actual = projectUserRoleLinkService.findAllByUserId(1L);
-        Optional<List<ProjectUserRoleLink>> expected = Optional.of(projectUserRoleLinks);
+        List<ProjectUserRoleLink> actual = projectUserRoleLinkService.findAllByUserId(1L);
+        List<ProjectUserRoleLink> expected = projectUserRoleLinks;
 
         Assert.assertEquals(actual, expected);
     }
 
     @Test
-    public void findAllByUserIdFail(){
+    public void findAllByUserIdFail() throws ProjectsByUserIdNotFound {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
 
-        when(projectUserRoleLinkRepository.findByUserId(1L)).thenReturn(Optional.empty());
+        when(projectUserRoleLinkRepository.findByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
 
-        Optional<List<ProjectUserRoleLink>> actual = projectUserRoleLinkService.findAllByUserId(1L);
-        Optional<List<ProjectUserRoleLink>> expected = Optional.empty();
-
-        Assert.assertEquals(actual, expected);
+        projectUserRoleLinkService.findAllByUserId(1L);
     }
 
     @Captor ArgumentCaptor<ProjectUserRoleLink> captor;

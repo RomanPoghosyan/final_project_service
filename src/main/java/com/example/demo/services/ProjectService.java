@@ -1,6 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
+import com.example.demo.exceptions.RoleNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -11,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -33,10 +35,10 @@ public class ProjectService {
     }
 
 
-    public Project add(Project project, Authentication authentication) {
+    public Project add(Project project, Authentication authentication) throws UserNotFound, RoleNotFound {
         Project savedProject = projectRepository.save(project);
-        Role role = roleService.findById(1L).get();
-        User user = userService.findByUsername(authentication.getName()).get();
+        Role role = roleService.findById(1L);
+        User user = userService.findByUsername(authentication.getName());
         projectUserRoleLinkService.add(savedProject, user, role);
         return savedProject;
     }
@@ -45,21 +47,17 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Optional<Project> findById ( Long id ) {
-        return projectRepository.findById(id);
+    public Project findById ( Long id ) throws ProjectNotFound {
+            return projectRepository.findById(id).orElseThrow(ProjectNotFound::new);
     }
 
     public List<Project> findAllByUserId (Long id) throws ProjectsByUserIdNotFound {
-        if (projectUserRoleLinkService.findAllByUserId(id).isPresent()) {
-            List<ProjectUserRoleLink> projectUserRoleLinks = projectUserRoleLinkService.findAllByUserId(id).get();
+        List<ProjectUserRoleLink> projectUserRoleLinks = projectUserRoleLinkService.findAllByUserId(id);
 
-            return projectUserRoleLinks
-                    .stream()
-                    .map(ProjectUserRoleLink::getProject)
-                    .collect(Collectors.toList());
-        } else {
-            throw new ProjectsByUserIdNotFound();
-        }
+        return projectUserRoleLinks
+                .stream()
+                .map(ProjectUserRoleLink::getProject)
+                .collect(Collectors.toList());
     }
 }
 

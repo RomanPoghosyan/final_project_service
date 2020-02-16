@@ -1,6 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
+import com.example.demo.exceptions.RoleNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -43,23 +46,23 @@ public class ProjectServiceTest {
     Authentication authentication;
 
     @Test
-    public void testFindById() {
+    public void testFindById() throws ProjectNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
         Project project = new Project();
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        Optional<Project> actual = projectService.findById(1L);
-        Assert.assertEquals(actual, Optional.of(project));
+        Project actual = projectService.findById(1L);
+        Assert.assertEquals(actual, project);
     }
 
     @Test
-    public void testFindByIdFail() {
+    public void testFindByIdFail() throws ProjectNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
 
         when(projectRepository.findById(2L)).thenReturn(Optional.empty());
 
-        Optional<Project> actual = projectService.findById(2L);
-        Assert.assertEquals(actual, Optional.empty());
+        Project actual = projectService.findById(2L);
+        Assert.assertEquals(actual, null);
     }
 
     @Test
@@ -72,13 +75,13 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testAddProjectSaveSuccess() {
+    public void testAddProjectSaveSuccess() throws UserNotFound, RoleNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
         Project project = new Project();
         User user = new User();
         Role role = new Role();
-        when(userService.findByUsername(authentication.getName())).thenReturn(Optional.of(user));
-        when(roleService.findById(1L)).thenReturn(Optional.of(role));
+        when(userService.findByUsername(authentication.getName())).thenReturn(user);
+        when(roleService.findById(1L)).thenReturn(role);
         when(projectRepository.save(project)).thenReturn(project);
 
         projectService.add(project, authentication);
@@ -87,13 +90,13 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testAddPURLAddSuccess() {
+    public void testAddPURLAddSuccess() throws UserNotFound, RoleNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
         Project project = new Project();
         User user = new User();
         Role role = new Role();
-        when(userService.findByUsername(authentication.getName())).thenReturn(Optional.of(user));
-        when(roleService.findById(1L)).thenReturn(Optional.of(role));
+        when(userService.findByUsername(authentication.getName())).thenReturn(user);
+        when(roleService.findById(1L)).thenReturn(role);
         when(projectRepository.save(project)).thenReturn(project);
 
         projectService.add(project, authentication);
@@ -108,7 +111,7 @@ public class ProjectServiceTest {
         ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
         projectUserRoleLink.setProject(project);
         List<ProjectUserRoleLink> projectUserRoleLinks = Collections.singletonList(projectUserRoleLink);
-        when(projectUserRoleLinkService.findAllByUserId(1L)).thenReturn(Optional.of(projectUserRoleLinks));
+        when(projectUserRoleLinkService.findAllByUserId(1L)).thenReturn(projectUserRoleLinks);
 
         List<Project> actual = projectService.findAllByUserId(1L);
         List<Project> expected = Collections.singletonList(project);
@@ -118,7 +121,7 @@ public class ProjectServiceTest {
     @Test(expected = ProjectsByUserIdNotFound.class)
     public void testFindAllByUserIdFail() throws ProjectsByUserIdNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
-        when(projectUserRoleLinkService.findAllByUserId(1L)).thenReturn(Optional.empty());
+        when(projectUserRoleLinkService.findAllByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
 
         projectService.findAllByUserId(1L);
     }

@@ -1,4 +1,4 @@
-package com.example.demo.models.responses;
+package com.example.demo.dto.responses;
 
 public class OkResponse extends Response {
     public OkResponse(Object data) {

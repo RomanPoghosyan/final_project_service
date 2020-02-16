@@ -1,10 +1,9 @@
 package com.example.demo.controllers;
-import com.example.demo.auth.CustomUser;
+import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.models.Task;
-import com.example.demo.models.User;
-import com.example.demo.models.requests.TaskRequest;
-import com.example.demo.models.responses.OkResponse;
-import com.example.demo.models.responses.Response;
+import com.example.demo.dto.requests.TaskRequest;
+import com.example.demo.dto.responses.OkResponse;
+import com.example.demo.dto.responses.Response;
 import com.example.demo.services.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +28,8 @@ public class TaskController {
         return new ResponseEntity<>(new OkResponse(taskRequest), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Response> findByProjectId ( @RequestBody Long projectId ) {
+    @GetMapping("byProject/{projectId}")
+    public ResponseEntity<Response> findByProjectId(@PathVariable Long projectId) throws TaskNotFound {
         List<Task> tasks = taskService.findByProjectId(projectId);
         return new ResponseEntity<>(new OkResponse(tasks), HttpStatus.OK);
     }
