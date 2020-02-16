@@ -1,13 +1,17 @@
 package com.example.demo.models;
 
 
-import org.hibernate.annotations.Cascade;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "task_status")
+@Data
+//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class TaskStatus {
 
     @Id
@@ -17,8 +21,9 @@ public class TaskStatus {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task_status", cascade = {CascadeType.REMOVE})
-//    @JoinColumn(name = "task_status_id")
     private List<Task> tasks;
+
+    private Long[] taskIds;
 
     @ManyToOne
     private Project project;
@@ -45,6 +50,14 @@ public class TaskStatus {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public Long[] getTaskIds() {
+        return taskIds;
+    }
+
+    public void setTaskIds(Long[] taskIds) {
+        this.taskIds = taskIds;
     }
 
     public Project getProject() {

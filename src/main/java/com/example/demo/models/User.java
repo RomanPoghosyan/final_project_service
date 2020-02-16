@@ -1,24 +1,22 @@
 package com.example.demo.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.*;
-
-import static javax.persistence.TemporalType.TIMESTAMP;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "created_tasks"})
+@Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "created_tasks", "assigned_tasks" }, allowSetters= true)
+//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class User {
 
     @Id
@@ -35,26 +33,16 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
 
-    @JsonIgnore
-    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
-        return projectUserRoleLinks;
-    }
-
-    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
-        this.projectUserRoleLinks = projectUserRoleLinks;
-    }
-
     @OneToMany
     @JoinColumn(name = "user_id")
     private List<Comment> comments;
 
-    //    TODO is everything ok?
+//    TODO is everything ok?
     @OneToMany
     @JoinColumn(name = "assignor_id")
     private List<Task> created_tasks;
@@ -70,52 +58,6 @@ public class User {
     @OneToMany
     @JoinColumn(name = "notified_to_id")
     private List<Notification> notifications_to;
-
-    @CreationTimestamp
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate created_at;
-
-    @UpdateTimestamp
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate updated_at;
-
-    private String location;
-
-    private String phoneNumber;
-
-    public LocalDate getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDate created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDate getChanged_at() {
-        return updated_at;
-    }
-
-    public void setChanged_at(LocalDate changed_at) {
-        this.updated_at = changed_at;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     public Long getId() {
         return id;
@@ -203,5 +145,13 @@ public class User {
 
     public void setNotifications_to(List<Notification> notifications_to) {
         this.notifications_to = notifications_to;
+    }
+
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+    return projectUserRoleLinks;
+}
+
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
     }
 }

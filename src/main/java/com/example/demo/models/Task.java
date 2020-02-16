@@ -1,11 +1,18 @@
 package com.example.demo.models;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "tasks")
+@Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status" }, allowSetters= true)
+//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Task {
 
     @Id
@@ -28,11 +35,9 @@ public class Task {
     private Project project;
 
     @ManyToOne
-    @JsonIgnore
     private User assignor;
 
     @ManyToOne
-    @JsonIgnore
     private User assignee;
 
     @OneToMany
@@ -79,6 +84,7 @@ public class Task {
         this.task_status = task_status;
     }
 
+    @JsonIgnore
     public Project getProject() {
         return project;
     }

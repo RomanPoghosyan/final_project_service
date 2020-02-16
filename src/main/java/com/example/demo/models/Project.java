@@ -1,13 +1,20 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
 @Table(name = "projects")
+@Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "tasks", "taskStatuses" }, allowSetters= true)
+//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Project {
 
     @Id
@@ -16,7 +23,7 @@ public class Project {
 
     private String name;
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ProjectUserRoleLink> projectUserRoleLinks = new ArrayList<>();
 
     @OneToMany
@@ -26,6 +33,16 @@ public class Project {
     @OneToMany
     @JoinColumn(name = "project_id")
     private List<TaskStatus> taskStatuses;
+
+    private Long[] taskStatusesOrder;
+
+    public Long[] getTaskStatusesOrder() {
+        return taskStatusesOrder;
+    }
+
+    public void setTaskStatusesOrder(Long[] taskStatusesOrder) {
+        this.taskStatusesOrder = taskStatusesOrder;
+    }
 
     public Long getId() {
         return id;
@@ -43,7 +60,7 @@ public class Project {
         this.name = name;
     }
 
-    @JsonIgnore
+//    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }
@@ -52,7 +69,15 @@ public class Project {
         this.tasks = tasks;
     }
 
-    @JsonIgnore
+    public List<TaskStatus> getTaskStatuses() {
+        return taskStatuses;
+    }
+
+    public void setTaskStatuses(List<TaskStatus> taskStatuses) {
+        this.taskStatuses = taskStatuses;
+    }
+
+    //    @JsonIgnore
     public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
         return projectUserRoleLinks;
     }
