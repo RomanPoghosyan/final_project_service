@@ -15,13 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 10000)
 @RequestMapping("/projects")
 public class ProjectController {
     private ProjectService projectService;
@@ -36,9 +37,9 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<Response> getProjectById(@PathVariable Long projectId) throws ProjectNotFound {
-        Project project = projectService.findById(projectId);
-        return new ResponseEntity<>(new OkResponse(project), HttpStatus.OK);
+    @Transactional(readOnly = true)
+    public ResponseEntity<Response> getProjectById(@PathVariable Long projectId, Authentication authentication) throws ProjectNotFound {
+        return new ResponseEntity<>(new OkResponse(projectService.findByIdForResponse(projectId, authentication)), HttpStatus.OK);
     }
 
     @GetMapping("/all/{userId:\\d+}")

@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.responses.ProjectResponse;
+import com.example.demo.dto.responses.TaskMiniInfoResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.exceptions.RoleNotFound;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 
@@ -48,7 +51,40 @@ public class ProjectService {
     }
 
     public Project findById ( Long id ) throws ProjectNotFound {
-            return projectRepository.findById(id).orElseThrow(ProjectNotFound::new);
+        if(projectRepository.findById(id).isPresent()){
+            return projectRepository.findById(id).get();
+        }else{
+            throw new ProjectNotFound();
+        }
+    }
+
+    public ProjectResponse findByIdForResponse ( Long id, Authentication authentication ) throws ProjectNotFound {
+        if(projectRepository.findById(id).isPresent()){
+            Project project = projectRepository.findById(id).get();
+            AtomicBoolean allow = new AtomicBoolean(false);
+            project.getProjectUserRoleLinks().forEach(purl -> {
+                if (authentication.getName().equals(purl.getUser().getUsername())) allow.set(true);
+            });
+            if(allow.get()) {
+                ProjectResponse projectResponse = new ProjectResponse();
+                projectResponse.setId(project.getId());
+                projectResponse.setName(project.getName());
+                project.getTasks()
+                        .forEach(t -> {
+                            TaskMiniInfoResponse tmir = new TaskMiniInfoResponse(t.getId(), t.getTitle(), t.getAssignee().getId(), t.getMicro_tasks());
+                            projectResponse.getTasks().add(tmir);
+                        });
+
+                projectResponse.setTaskStatuses(project.getTaskStatuses());
+                projectResponse.setTaskStatusesOrder(project.getTaskStatusesOrder());
+                return projectResponse;
+            }else {
+                throw new ProjectNotFound();
+            }
+        }else{
+            throw new ProjectNotFound();
+        }
+//            return projectRepository.findById(id).orElseThrow(ProjectNotFound::new);
     }
 
     public List<Project> findAllByUserId (Long id) throws ProjectsByUserIdNotFound {

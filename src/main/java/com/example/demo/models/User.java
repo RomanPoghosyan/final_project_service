@@ -1,7 +1,10 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,7 +14,9 @@ import java.util.Map;
 
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "created_tasks"})
+@Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "created_tasks", "assigned_tasks" }, allowSetters= true)
+//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class User {
 
     @Id
@@ -32,14 +37,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
-
-    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
-        return projectUserRoleLinks;
-    }
-
-    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
-        this.projectUserRoleLinks = projectUserRoleLinks;
-    }
 
     @OneToMany
     @JoinColumn(name = "user_id")
@@ -148,5 +145,13 @@ public class User {
 
     public void setNotifications_to(List<Notification> notifications_to) {
         this.notifications_to = notifications_to;
+    }
+
+    public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
+    return projectUserRoleLinks;
+}
+
+    public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
+        this.projectUserRoleLinks = projectUserRoleLinks;
     }
 }

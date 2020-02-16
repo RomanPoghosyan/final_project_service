@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 10000)
 @RequestMapping("/auth")
 public class Authentication {
     private final AuthenticationManager authenticationManager;
