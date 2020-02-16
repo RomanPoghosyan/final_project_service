@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @Service
 public class TaskStatusService {
@@ -34,7 +37,17 @@ public class TaskStatusService {
         TaskStatus taskStatus = new TaskStatus();
         taskStatus.setName(addTaskStatusRequest.getName());
         taskStatus.setProject(project);
-        return taskStatusRepository.save(taskStatus);
+        TaskStatus saved = taskStatusRepository.save(taskStatus);
+
+        try{
+            List<Long> newTaskStatusesOrder = Arrays.asList(project.getTaskStatusesOrder());
+            newTaskStatusesOrder.add(saved.getId());
+            project.setTaskStatusesOrder((Long[]) newTaskStatusesOrder.toArray());
+        } catch (Exception e){
+            project.setTaskStatusesOrder(new Long[]{saved.getId()});
+        }
+        projectService.save(project);
+        return saved;
     }
 }
 

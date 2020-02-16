@@ -1,10 +1,16 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "comments")
+@Data
+@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Comment {
 
     @Id
