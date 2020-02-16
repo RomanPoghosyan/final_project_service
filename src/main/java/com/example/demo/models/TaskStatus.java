@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "task_status")
 @Data
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project" }, allowSetters= true)
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "tasks" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class TaskStatus {
 

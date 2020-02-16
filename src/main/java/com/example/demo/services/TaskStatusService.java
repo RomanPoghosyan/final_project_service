@@ -40,7 +40,8 @@ public class TaskStatusService {
         TaskStatus saved = taskStatusRepository.save(taskStatus);
 
         try{
-            List<Long> newTaskStatusesOrder = Arrays.asList(project.getTaskStatusesOrder());
+            Long[] taskStatusesOrder = project.getTaskStatusesOrder();
+            List<Long> newTaskStatusesOrder = Arrays.asList(taskStatusesOrder);
             newTaskStatusesOrder.add(saved.getId());
             project.setTaskStatusesOrder((Long[]) newTaskStatusesOrder.toArray());
         } catch (Exception e){

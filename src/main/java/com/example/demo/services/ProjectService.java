@@ -8,6 +8,7 @@ import com.example.demo.exceptions.RoleNotFound;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.*;
 import com.example.demo.repos.ProjectRepository;
+import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,8 @@ public class ProjectService {
                 projectResponse.setName(project.getName());
                 project.getTasks()
                         .forEach(t -> {
-                            TaskMiniInfoResponse tmir = new TaskMiniInfoResponse(t.getId(), t.getTitle(), t.getAssignee().getId(), t.getMicro_tasks());
+                            Long assignee_id = t.getAssignee() != null ? t.getAssignee().getId() : null;
+                            TaskMiniInfoResponse tmir = new TaskMiniInfoResponse(t.getId(), t.getTitle(), assignee_id, t.getMicro_tasks());
                             projectResponse.getTasks().add(tmir);
                         });
 
