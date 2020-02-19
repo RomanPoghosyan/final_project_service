@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
-
     private final ProjectRepository projectRepository;
     private final ProjectUserRoleLinkService projectUserRoleLinkService;
     private final RoleService roleService;
@@ -30,7 +29,6 @@ public class ProjectService {
 
     @Autowired
     public ProjectService(ProjectRepository projectRepository, ProjectUserRoleLinkService projectUserRoleLinkService, RoleService roleService, UserService userService) {
-
         this.projectRepository = projectRepository;
         this.projectUserRoleLinkService = projectUserRoleLinkService;
         this.roleService = roleService;

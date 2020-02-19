@@ -32,6 +32,9 @@ public class Project {
     @JoinColumn(name = "project_id")
     private List<TaskStatus> taskStatuses;
 
+    @OneToMany
+    private List<Notification> notifications;
+
     private Long[] taskStatusesOrder;
 
     public Long[] getTaskStatusesOrder() {

@@ -35,6 +35,9 @@ public class Task {
     private Project project;
 
     @ManyToOne
+    private Task task;
+
+    @ManyToOne
     @JsonIgnore
     private User assignor;
 
@@ -45,6 +48,9 @@ public class Task {
     @OneToMany
     @JoinColumn(name = "task_id")
     private List<Comment> comments;
+
+    @OneToMany
+    private List<Notification> notifications;
 
     public Long getId() {
         return id;
@@ -118,4 +124,21 @@ public class Task {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }
+
