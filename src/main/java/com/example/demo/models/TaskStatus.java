@@ -1,16 +1,34 @@
 package com.example.demo.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vladmihalcea.hibernate.type.array.IntArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "task_status")
 @Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "tasks" }, allowSetters= true)
+@TypeDefs({
+        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
+        @TypeDef(name = "int-array", typeClass = IntArrayType.class),
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
+        @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
+        @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
+})
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class TaskStatus {
 
@@ -18,12 +36,14 @@ public class TaskStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String title;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task_status", cascade = {CascadeType.REMOVE})
     private List<Task> tasks;
 
-    private Long[] taskIds;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private List<Long> taskIds = new ArrayList<>();
 
     @ManyToOne
     private Project project;
@@ -36,12 +56,12 @@ public class TaskStatus {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<Task> getTasks() {
@@ -52,11 +72,11 @@ public class TaskStatus {
         this.tasks = tasks;
     }
 
-    public Long[] getTaskIds() {
+    public List<Long> getTaskIds() {
         return taskIds;
     }
 
-    public void setTaskIds(Long[] taskIds) {
+    public void setTaskIds(List<Long> taskIds) {
         this.taskIds = taskIds;
     }
 

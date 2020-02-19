@@ -87,6 +87,12 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+		<!-- https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-52 -->
+		<dependency>
+			<groupId>com.vladmihalcea</groupId>
+			<artifactId>hibernate-types-52</artifactId>
+			<version>2.9.3</version>
+		</dependency>
     </dependencies>
 
 	<build>

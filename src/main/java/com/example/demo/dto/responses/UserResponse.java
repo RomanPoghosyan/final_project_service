@@ -1,19 +1,12 @@
-package com.example.demo.dto.requests;
+package com.example.demo.dto.responses;
 
-import com.example.demo.models.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.example.demo.models.User;
 
-import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
-public class UserSettingsRequest {
+public class UserResponse {
+
+    private Long id;
 
     private String username;
 
@@ -31,7 +24,8 @@ public class UserSettingsRequest {
 
     private String phone_number;
 
-    public UserSettingsRequest(User user) {
+    public UserResponse(User user) {
+        this.id = user.getId();
         this.username = user.getUsername();
         this.first_name = user.getFirst_name();
         this.last_name = user.getLast_name();
@@ -42,32 +36,12 @@ public class UserSettingsRequest {
         this.phone_number = user.getPhoneNumber();
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public Long getId() {
+        return id;
     }
 
-    public LocalDate getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDate created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDate getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDate updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -101,4 +75,39 @@ public class UserSettingsRequest {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public LocalDate getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDate created_at) {
+        this.created_at = created_at;
+    }
+
+    public LocalDate getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(LocalDate updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
 }
+
+
+

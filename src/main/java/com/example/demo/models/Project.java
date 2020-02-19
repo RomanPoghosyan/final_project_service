@@ -3,7 +3,16 @@ package com.example.demo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vladmihalcea.hibernate.type.array.IntArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.*;
@@ -11,6 +20,14 @@ import java.util.*;
 @Entity
 @Table(name = "projects")
 @Data
+@TypeDefs({
+        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
+        @TypeDef(name = "int-array", typeClass = IntArrayType.class),
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
+        @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
+        @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
+})
 @JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "tasks", "taskStatuses" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Project {
@@ -32,16 +49,15 @@ public class Project {
     @JoinColumn(name = "project_id")
     private List<TaskStatus> taskStatuses;
 
-    @OneToMany
-    private List<Notification> notifications;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private List<Long> taskStatusesOrder = new ArrayList<>();
 
-    private Long[] taskStatusesOrder;
-
-    public Long[] getTaskStatusesOrder() {
+    public List<Long> getTaskStatusesOrder() {
         return taskStatusesOrder;
     }
 
-    public void setTaskStatusesOrder(Long[] taskStatusesOrder) {
+    public void setTaskStatusesOrder(List<Long> taskStatusesOrder) {
         this.taskStatusesOrder = taskStatusesOrder;
     }
 
@@ -61,7 +77,6 @@ public class Project {
         this.name = name;
     }
 
-    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }

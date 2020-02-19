@@ -6,7 +6,6 @@ import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.TaskStatus;
 import com.example.demo.models.User;
-import com.example.demo.repos.ProjectRepository;
 import com.example.demo.repos.TaskStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -35,16 +34,16 @@ public class TaskStatusService {
         User user = userService.findByUsername(authentication.getName());
         Project project = projectService.findById(addTaskStatusRequest.getProjectId());
         TaskStatus taskStatus = new TaskStatus();
-        taskStatus.setName(addTaskStatusRequest.getName());
+        taskStatus.setTitle(addTaskStatusRequest.getName());
         taskStatus.setProject(project);
         TaskStatus saved = taskStatusRepository.save(taskStatus);
 
         try{
-            List<Long> newTaskStatusesOrder = Arrays.asList(project.getTaskStatusesOrder());
-            newTaskStatusesOrder.add(saved.getId());
-            project.setTaskStatusesOrder((Long[]) newTaskStatusesOrder.toArray());
+            List<Long> taskStatusesOrder = project.getTaskStatusesOrder();
+            taskStatusesOrder.add(saved.getId());
+            project.setTaskStatusesOrder(taskStatusesOrder);
         } catch (Exception e){
-            project.setTaskStatusesOrder(new Long[]{saved.getId()});
+            project.setTaskStatusesOrder(Arrays.asList(saved.getId()));
         }
         projectService.save(project);
         return saved;
