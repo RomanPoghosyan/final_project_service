@@ -5,9 +5,11 @@ import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
+import com.example.demo.exceptions.TaskStatusNotFound;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.Task;
+import com.example.demo.models.TaskStatus;
 import com.example.demo.models.User;
 import com.example.demo.repos.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +26,40 @@ public class TaskService {
     private TaskRepository taskRepository;
     private UserService userService;
     private ProjectService projectService;
+    private TaskStatusService taskStatusService;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserService userService, ProjectService projectService) {
+    public TaskService(TaskRepository taskRepository, UserService userService, ProjectService projectService, TaskStatusService taskStatusService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
         this.projectService = projectService;
+        this.taskStatusService = taskStatusService;
     }
 
-    public ResponseEntity<Response> save (TaskRequest taskRequest, Principal principal ) throws UserNotFound, ProjectNotFound {
+    public Task save (TaskRequest taskRequest, Principal principal ) throws UserNotFound, ProjectNotFound, TaskStatusNotFound {
         User user = userService.findByUsername(principal.getName());
         Task task = new Task();
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
-        task.setTask_status(taskRequest.getTask_status_id());
+        TaskStatus taskStatus = taskStatusService.findById( taskRequest.getTask_status_id() );
+        task.setTask_status(taskStatus);
+
         task.setAssignor(user);
         Project project = projectService.findById(taskRequest.getProject_id());
-        User assignee = userService.findById(taskRequest.getAssignee_id());
+        if(taskRequest.getAssignee_id() != null) {
+            User assignee = userService.findById(taskRequest.getAssignee_id());
+            task.setAssignee(assignee);
+        }else{
+            task.setAssignee(null);
+        }
         task.setProject(project);
-        task.setAssignee(assignee);
-        return new ResponseEntity<>(new OkResponse(taskRepository.save (task)), HttpStatus.CREATED);
+        taskRepository.save(task);
+
+        List<Long> taskIds = taskStatus.getTaskIds();
+        taskIds.add(task.getId());
+        taskStatus.setTaskIds(taskIds);
+        taskStatusService.save(taskStatus);
+        return task;
     }
 
     public List<Task> findByAssigneeId (Long userId) throws TaskNotFound {

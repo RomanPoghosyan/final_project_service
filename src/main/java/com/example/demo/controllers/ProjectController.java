@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.dto.requests.ColumnReorderRequest;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.exceptions.RoleNotFound;
@@ -50,5 +51,10 @@ public class ProjectController {
     @PostMapping(consumes={"application/json"})
     public ResponseEntity<Response> addProject(@RequestBody Project project, Authentication authentication) throws UserNotFound, RoleNotFound {
         return new ResponseEntity<>(new OkResponse(projectService.add(project, authentication)), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/column-reorder", consumes={"application/json"})
+    public ResponseEntity<Response> updateColumnOrder(@RequestBody ColumnReorderRequest columnReorderRequest, Authentication authentication) throws UserNotFound, RoleNotFound, ProjectNotFound {
+        return new ResponseEntity<>(new OkResponse(projectService.updateColumnOrder(columnReorderRequest, authentication)), HttpStatus.OK);
     }
 }

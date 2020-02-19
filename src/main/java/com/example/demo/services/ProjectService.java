@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.requests.ColumnReorderRequest;
 import com.example.demo.dto.responses.ProjectResponse;
 import com.example.demo.dto.responses.TaskMiniInfoResponse;
 import com.example.demo.exceptions.ProjectNotFound;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -102,6 +104,13 @@ public class ProjectService {
                 .stream()
                 .map(ProjectUserRoleLink::getProject)
                 .collect(Collectors.toList());
+    }
+
+    public List<Long> updateColumnOrder(ColumnReorderRequest columnReorderRequest, Authentication authentication) throws ProjectNotFound {
+        Project project = projectRepository.findById(columnReorderRequest.getProjectId()).orElseThrow(ProjectNotFound::new);
+        project.setTaskStatusesOrder(columnReorderRequest.getColumnOrder());
+        projectRepository.save(project);
+        return columnReorderRequest.getColumnOrder();
     }
 }
 
