@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,10 +41,12 @@ public class ProjectService {
 
 
     public Project add(Project project, Authentication authentication) throws UserNotFound, RoleNotFound {
+        Role leadRole = roleService.findById(1L);
+        Role memberRole = roleService.findById(2L);
+        project.getRoles().addAll(Arrays.asList(leadRole, memberRole));
         Project savedProject = projectRepository.save(project);
-        Role role = roleService.findById(1L);
         User user = userService.findByUsername(authentication.getName());
-        projectUserRoleLinkService.add(savedProject, user, role);
+        projectUserRoleLinkService.add(savedProject, user, leadRole);
         return savedProject;
     }
 
