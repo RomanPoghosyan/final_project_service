@@ -1,8 +1,5 @@
 package com.example.demo.models;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -11,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "tasks")
 @Data
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status" }, allowSetters= true)
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status", "notifications", "getProject" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Task {
 
@@ -35,9 +32,6 @@ public class Task {
     private Project project;
 
     @ManyToOne
-    private Task task;
-
-    @ManyToOne
     @JsonIgnore
     private User assignor;
 
@@ -50,6 +44,8 @@ public class Task {
     private List<Comment> comments;
 
     @OneToMany
+//    @JsonBackReference
+    @JoinColumn(name = "task_id")
     private List<Notification> notifications;
 
     public Long getId() {
@@ -92,7 +88,6 @@ public class Task {
         this.task_status = task_status;
     }
 
-    @JsonIgnore
     public Project getProject() {
         return project;
     }
@@ -123,14 +118,6 @@ public class Task {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public List<Notification> getNotifications() {

@@ -8,6 +8,7 @@ import com.example.demo.exceptions.RoleNotFound;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.*;
 import com.example.demo.repos.ProjectRepository;
+import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
+
     private final ProjectRepository projectRepository;
     private final ProjectUserRoleLinkService projectUserRoleLinkService;
     private final RoleService roleService;
@@ -69,16 +71,12 @@ public class ProjectService {
                 project.getTasks()
                         .forEach(t -> {
                             Long assignee_id = t.getAssignee() != null ? t.getAssignee().getId() : null;
-//                            TaskMiniInfoResponse tmir = new TaskMiniInfoResponse(t.getId(), t.getTitle(), assignee_id, t.getMicro_tasks());
                             TaskMiniInfoResponse tmir = new TaskMiniInfoResponse(t.getId(), t.getTitle(), assignee_id, t.getMicro_tasks());
-                            projectResponse.getTasks().put(tmir.getId(), tmir);
+                            projectResponse.getTasks().add(tmir);
                         });
 
-                Map<Long, TaskStatus> taskStatusMap = project.getTaskStatuses()
-                        .stream().collect(Collectors.toMap(TaskStatus::getId, Function.identity()));
-
-                projectResponse.setColumns(taskStatusMap);
-                projectResponse.setColumnOrder(project.getTaskStatusesOrder());
+                projectResponse.setTaskStatuses(project.getTaskStatuses());
+                projectResponse.setTaskStatusesOrder(project.getTaskStatusesOrder());
                 return projectResponse;
 
 

@@ -1,8 +1,10 @@
 package com.example.demo.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vladmihalcea.hibernate.type.array.IntArrayType;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
@@ -20,14 +22,6 @@ import java.util.*;
 @Entity
 @Table(name = "projects")
 @Data
-@TypeDefs({
-        @TypeDef(name = "string-array", typeClass = StringArrayType.class),
-        @TypeDef(name = "int-array", typeClass = IntArrayType.class),
-        @TypeDef(name = "json", typeClass = JsonStringType.class),
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
-        @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
-        @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
-})
 @JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "tasks", "taskStatuses" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Project {
@@ -44,6 +38,11 @@ public class Project {
     @OneToMany
     @JoinColumn(name = "project_id")
     private List<Task> tasks;
+
+    @OneToMany
+//    @JsonBackReference
+    @JoinColumn(name = "project_id")
+    private List<Notification> notifications;
 
     @OneToMany
     @JoinColumn(name = "project_id")
@@ -100,5 +99,13 @@ public class Project {
 
     public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
         this.projectUserRoleLinks = projectUserRoleLinks;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

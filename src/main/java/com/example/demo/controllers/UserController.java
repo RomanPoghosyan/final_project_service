@@ -2,7 +2,9 @@ package com.example.demo.controllers;
 
 import com.example.demo.auth.CustomUser;
 import com.example.demo.dto.requests.UserSettingsRequest;
-import com.example.demo.dto.responses.*;
+import com.example.demo.dto.responses.BadResponse;
+import com.example.demo.dto.responses.OkResponse;
+import com.example.demo.dto.responses.Response;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
@@ -35,13 +37,34 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Response> getCurrentUserData(Authentication authentication) throws UserNotFound {
         User user = userService.findByUsername(authentication.getName());
-        UserResponse userResponse = new UserResponse(user);
-        return new ResponseEntity<>(new OkResponse((userResponse)), HttpStatus.OK);
+        UserSettingsRequest userSettingsRequest = new UserSettingsRequest(user);
+        return new ResponseEntity<>(new OkResponse((userSettingsRequest)), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<Response> changeCurrentUserData(@RequestBody User user, Authentication authentication) throws UserNotFound, UserAlreadyExists {
-        UserResponse userResponse = new UserResponse(userService.update(user, authentication));
-        return new ResponseEntity<>(new OkResponse(userResponse), HttpStatus.OK);
+        User currentUser = userService.findByUsername(authentication.getName());
+        if (!(currentUser.getUsername().equals(user.getUsername()))) {
+            try {
+                userService.findByUsername(user.getUsername());
+                return new ResponseEntity<>(new BadResponse(Collections.singletonList("Username already exists.")), HttpStatus.CONFLICT);
+            } catch (UserNotFound ignored) {
+                currentUser.setUsername(user.getUsername());
+            }
+        }
+        if (!(currentUser.getEmail().equals(user.getEmail()))) {
+            try {
+                userService.findByEmail(user.getEmail());
+                return new ResponseEntity<>(new BadResponse(Collections.singletonList("Email already exists.")), HttpStatus.CONFLICT);
+            } catch (UserNotFound ignored) {
+                currentUser.setEmail(user.getEmail());
+            }
+        }
+        currentUser.setFirst_name(user.getFirst_name());
+        currentUser.setLast_name(user.getLast_name());
+        currentUser.setLocation(user.getLocation());
+        currentUser.setPhoneNumber(user.getPhoneNumber());
+        userService.save(currentUser);
+        return new ResponseEntity<>(new OkResponse(currentUser), HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -21,7 +22,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Entity
 @Table(name = "users")
 @Data
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "created_tasks", "assigned_tasks", "created_at", "updated_at", "location", "phone_number" }, allowSetters= true)
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "created_tasks", "assigned_tasks", "created_at", "updated_at", "location", "phone_number", "password" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class User {
 
@@ -59,10 +60,12 @@ public class User {
 
     @OneToMany
     @JoinColumn(name = "notified_by_id")
+    @JsonIgnore
     private List<Notification> notifications_by;
 
     @OneToMany
     @JoinColumn(name = "notified_to_id")
+    @JsonIgnore
     private List<Notification> notifications_to;
 
     @CreationTimestamp

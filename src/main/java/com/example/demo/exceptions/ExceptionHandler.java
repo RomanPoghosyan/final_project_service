@@ -40,4 +40,9 @@ public class ExceptionHandler {
     public ResponseEntity<BadResponse> projectsByUserIdNotFound(){
         return new ResponseEntity<>(new BadResponse(Arrays.asList("User doesn't have any project")), HttpStatus.NOT_FOUND);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(NotificationNotFound.class)
+    public ResponseEntity<BadResponse> notificationByNotificationIdNotFound(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("There isn't notification by given id!")), HttpStatus.NOT_FOUND);
+    }
 }
