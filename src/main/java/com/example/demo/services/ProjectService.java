@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.requests.ColumnReorderRequest;
 import com.example.demo.dto.responses.ProjectResponse;
 import com.example.demo.dto.responses.TaskMiniInfoResponse;
 import com.example.demo.exceptions.ProjectNotFound;
@@ -12,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,10 +41,12 @@ public class ProjectService {
 
 
     public Project add(Project project, Authentication authentication) throws UserNotFound, RoleNotFound {
+        Role leadRole = roleService.findById(1L);
+        Role memberRole = roleService.findById(2L);
+        project.getRoles().addAll(Arrays.asList(leadRole, memberRole));
         Project savedProject = projectRepository.save(project);
-        Role role = roleService.findById(1L);
         User user = userService.findByUsername(authentication.getName());
-        projectUserRoleLinkService.add(savedProject, user, role);
+        projectUserRoleLinkService.add(savedProject, user, leadRole);
         return savedProject;
     }
 
@@ -102,6 +107,13 @@ public class ProjectService {
                 .stream()
                 .map(ProjectUserRoleLink::getProject)
                 .collect(Collectors.toList());
+    }
+
+    public List<Long> updateColumnOrder(ColumnReorderRequest columnReorderRequest, Authentication authentication) throws ProjectNotFound {
+        Project project = projectRepository.findById(columnReorderRequest.getProjectId()).orElseThrow(ProjectNotFound::new);
+        project.setTaskStatusesOrder(columnReorderRequest.getColumnOrder());
+        projectRepository.save(project);
+        return columnReorderRequest.getColumnOrder();
     }
 }
 

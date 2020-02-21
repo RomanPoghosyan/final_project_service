@@ -28,7 +28,7 @@ import java.util.*;
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
         @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
 })
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "tasks", "taskStatuses" }, allowSetters= true)
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "tasks", "taskStatuses", "roles" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Project {
 
@@ -44,6 +44,13 @@ public class Project {
     @OneToMany
     @JoinColumn(name = "project_id")
     private List<Task> tasks;
+
+    @ManyToMany
+    @JoinTable(
+            name = "project_roles",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
 
     @OneToMany
     @JoinColumn(name = "project_id")
@@ -100,5 +107,13 @@ public class Project {
 
     public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
         this.projectUserRoleLinks = projectUserRoleLinks;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
