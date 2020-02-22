@@ -42,6 +42,10 @@ public class UserSettingsRequest {
         this.phone_number = user.getPhoneNumber();
     }
 
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
     public LocalDate getCreated_at() {
         return created_at;
     }
@@ -64,14 +68,6 @@ public class UserSettingsRequest {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getPhoneNumber() {
-        return phone_number;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phone_number = phoneNumber;
     }
 
     public String getUsername() {

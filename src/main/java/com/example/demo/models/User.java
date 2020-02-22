@@ -2,7 +2,6 @@ package com.example.demo.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -60,12 +59,10 @@ public class User {
 
     @OneToMany
     @JoinColumn(name = "notified_by_id")
-    @JsonIgnore
     private List<Notification> notifications_by;
 
     @OneToMany
     @JoinColumn(name = "notified_to_id")
-    @JsonIgnore
     private List<Notification> notifications_to;
 
     @CreationTimestamp
