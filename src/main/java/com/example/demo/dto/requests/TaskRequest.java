@@ -33,11 +33,11 @@ public class TaskRequest {
         this.description = description;
     }
 
-    public TaskStatus getTask_status_id() {
+    public Long getTask_status_id() {
         return task_status_id;
     }
 
-    public void setTask_status_id(TaskStatus task_status_id) {
+    public void setTask_status_id(Long task_status_id) {
         this.task_status_id = task_status_id;
     }
 

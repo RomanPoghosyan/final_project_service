@@ -50,6 +50,13 @@ public class Project {
     @JoinColumn(name = "project_id")
     private List<Notification> notifications;
 
+    @ManyToMany
+    @JoinTable(
+            name = "project_roles",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
+
     @OneToMany
     @JoinColumn(name = "project_id")
     private List<TaskStatus> taskStatuses;
@@ -105,6 +112,14 @@ public class Project {
 
     public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
         this.projectUserRoleLinks = projectUserRoleLinks;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public List<Notification> getNotifications() {
