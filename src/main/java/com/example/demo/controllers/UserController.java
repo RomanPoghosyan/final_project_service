@@ -19,6 +19,7 @@ import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.BadResponse;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +39,12 @@ public class UserController {
         User user = userService.findByUsername(authentication.getName());
         UserResponse userResponse = new UserResponse(user);
         return new ResponseEntity<>(new OkResponse((userResponse)), HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{username}")
+    public ResponseEntity<Response> searchByUsername(@PathVariable String username, Authentication authentication) throws UserNotFound {
+        List<User> users = userService.searchByUsername(username);
+        return new ResponseEntity<>(new OkResponse(users), HttpStatus.OK);
     }
 
     @PutMapping
