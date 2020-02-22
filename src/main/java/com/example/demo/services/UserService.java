@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -64,5 +65,9 @@ public class UserService {
         currentUser.setLocation(user.getLocation());
         currentUser.setPhoneNumber(user.getPhoneNumber());
         return this.save(currentUser);
+    }
+
+    public List<User> searchByUsername (String username ) throws UserNotFound {
+        return userRepository.findByUsernameContaining(username).orElseThrow(UserNotFound::new);
     }
 }

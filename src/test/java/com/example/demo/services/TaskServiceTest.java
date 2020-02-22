@@ -40,10 +40,13 @@ public class TaskServiceTest {
     @Mock
     TaskService taskService;
 
+    @Mock
+    private TaskStatusService taskStatusService;
+
     @DisplayName("Return task by given id")
     @Test
     public void testFindById () throws TaskNotFound {
-        TaskService taskService = new TaskService(taskRepository, userService, projectService);
+        TaskService taskService = new TaskService(taskRepository, userService, projectService, taskStatusService);
         Task task = new Task();
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
         Task actual = taskService.findById(1L);
@@ -52,7 +55,7 @@ public class TaskServiceTest {
 
     @Test(expected = TaskNotFound.class)
     public void testFindByIdFail() throws TaskNotFound {
-        TaskService taskService = new TaskService(taskRepository, userService, projectService);
+        TaskService taskService = new TaskService(taskRepository, userService, projectService, taskStatusService);
         when(taskRepository.findById(2L)).thenReturn(Optional.empty());
         taskService.findById(2L);
     }

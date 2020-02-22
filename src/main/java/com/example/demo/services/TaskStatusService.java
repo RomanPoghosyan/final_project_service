@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.requests.AddTaskStatusRequest;
+import com.example.demo.dto.requests.TaskReorderRequest;
 import com.example.demo.exceptions.ProjectNotFound;
+import com.example.demo.exceptions.TaskStatusNotFound;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.TaskStatus;
@@ -29,7 +31,6 @@ public class TaskStatusService {
         this.projectService = projectService;
     }
 
-
     public TaskStatus add(AddTaskStatusRequest addTaskStatusRequest, Authentication authentication) throws UserNotFound, ProjectNotFound {
         User user = userService.findByUsername(authentication.getName());
         Project project = projectService.findById(addTaskStatusRequest.getProjectId());
@@ -47,6 +48,21 @@ public class TaskStatusService {
         }
         projectService.save(project);
         return saved;
+    }
+
+    public TaskStatus findById (Long taskStatusId ) throws TaskStatusNotFound {
+        return taskStatusRepository.findById(taskStatusId).orElseThrow(TaskStatusNotFound::new);
+    }
+
+    public List<Long> updateTaskOrder(TaskReorderRequest taskReorderRequest, Authentication authentication) throws TaskStatusNotFound {
+        TaskStatus taskStatus = taskStatusRepository.findById(taskReorderRequest.getColumnId()).orElseThrow(TaskStatusNotFound::new);
+        taskStatus.setTaskIds(taskReorderRequest.getTaskIds());
+        taskStatusRepository.save(taskStatus);
+        return taskReorderRequest.getTaskIds();
+    }
+
+    public TaskStatus save(TaskStatus taskStatus) {
+        return taskStatusRepository.save(taskStatus);
     }
 }
 

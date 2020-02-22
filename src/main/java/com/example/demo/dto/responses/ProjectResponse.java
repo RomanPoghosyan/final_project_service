@@ -3,13 +3,14 @@ package com.example.demo.dto.responses;
 import com.example.demo.models.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProjectResponse {
     private Long id;
     private String name;
-    private Map<Long, TaskMiniInfoResponse> tasks;
+    private Map<Long, TaskMiniInfoResponse> tasks = new HashMap<>();
     private Map<Long, TaskStatus> columns;
     private List<Long> columnOrder;
 

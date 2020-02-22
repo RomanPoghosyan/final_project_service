@@ -11,7 +11,7 @@ public class TaskRequest {
     private String description;
 
     //TODO to implement Task Status for get id
-    private TaskStatus task_status_id;
+    private Long task_status_id;
 
     private Long project_id;
 
