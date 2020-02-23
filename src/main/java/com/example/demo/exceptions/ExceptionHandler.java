@@ -45,4 +45,9 @@ public class ExceptionHandler {
     public ResponseEntity<BadResponse> notificationByNotificationIdNotFound(){
         return new ResponseEntity<>(new BadResponse(Arrays.asList("There isn't notification by given id!")), HttpStatus.NOT_FOUND);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(NoUserSearchResult.class)
+    public ResponseEntity<BadResponse> noUserSearchResult(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("No results")), HttpStatus.OK);
+    }
 }

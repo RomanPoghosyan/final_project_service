@@ -1,11 +1,9 @@
 package com.example.demo.models;
 
-import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -37,28 +35,19 @@ public class Notification {
     private User notifiedTo;
 
     @ManyToOne
-//    @JsonManagedReference
     private Project project;
 
     @ManyToOne
-//    @JsonManagedReference
     private Task task;
 
-    InvitationStatus invitationStatus;
+    private InvitationStatus invitationStatus;
 
+    private Long roleId;
 
     @CreationTimestamp
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate createdAt;
-
-    public LocalDate getCreated_at() {
-        return createdAt;
-    }
-
-    public void setCreated_at(LocalDate created_at) {
-        this.createdAt = created_at;
-    }
 
     public Long getId() {
         return id;
@@ -84,28 +73,24 @@ public class Notification {
         this.type = type;
     }
 
-    public User getNotified_by() {
+    public User getNotifiedBy() {
         return notifiedBy;
     }
 
-    public void setNotified_by(User notified_by) {
-        this.notifiedBy = notified_by;
+    public void setNotifiedBy(User notifiedBy) {
+        this.notifiedBy = notifiedBy;
     }
 
-    public User getNotified_to() {
+    public User getNotifiedTo() {
         return notifiedTo;
     }
 
-    public void setNotified_to(User notified_to) {
-        this.notifiedTo = notified_to;
+    public void setNotifiedTo(User notifiedTo) {
+        this.notifiedTo = notifiedTo;
     }
 
     public Project getProject() {
         return project;
-    }
-
-    public void setProjectId(Project project) {
-        this.project = project;
     }
 
     public void setProject(Project project) {
@@ -126,5 +111,21 @@ public class Notification {
 
     public void setInvitationStatus(InvitationStatus invitationStatus) {
         this.invitationStatus = invitationStatus;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 }
