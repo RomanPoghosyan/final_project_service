@@ -45,6 +45,11 @@ public class Project {
     @JoinColumn(name = "project_id")
     private List<Task> tasks;
 
+    @OneToMany
+//    @JsonBackReference
+    @JoinColumn(name = "project_id")
+    private List<Notification> notifications;
+
     @ManyToMany
     @JoinTable(
             name = "project_roles",
@@ -115,5 +120,13 @@ public class Project {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

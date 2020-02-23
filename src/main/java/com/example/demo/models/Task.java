@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "tasks")
 @Data
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status" }, allowSetters= true)
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status", "notifications" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Task {
 
@@ -43,6 +43,11 @@ public class Task {
     @OneToMany
     @JoinColumn(name = "task_id")
     private List<Comment> comments;
+
+    @OneToMany
+//    @JsonBackReference
+    @JoinColumn(name = "task_id")
+    private List<Notification> notifications;
 
     public Long getId() {
         return id;
@@ -84,7 +89,6 @@ public class Task {
         this.task_status = task_status;
     }
 
-    @JsonIgnore
     public Project getProject() {
         return project;
     }
@@ -116,4 +120,13 @@ public class Task {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }
+
