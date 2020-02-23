@@ -134,15 +134,15 @@ public class NotificationService {
         Notification notification = findById(replyToInvitationRequest.getNotificationId());
         if ( replyToInvitationRequest.isAccepted() ) {
             notification.setInvitationStatus(InvitationStatus.ACCEPTED);
+            ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
+            projectUserRoleLink.setUser(notification.getNotifiedTo());
+            projectUserRoleLink.setProject(notification.getProject());
+            Role role = roleService.findById(notification.getRoleId());
+            projectUserRoleLink.setRole(role);
+            projectUserRoleLinkService.save(projectUserRoleLink);
         } else {
             notification.setInvitationStatus(InvitationStatus.REJECTED);
         }
-        ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
-        projectUserRoleLink.setUser(notification.getNotifiedTo());
-        projectUserRoleLink.setProject(notification.getProject());
-        Role role = roleService.findById(notification.getRoleId());
-        projectUserRoleLink.setRole(role);
-        projectUserRoleLinkService.save(projectUserRoleLink);
 
         save(notification);
         return notification;
