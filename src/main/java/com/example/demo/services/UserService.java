@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.responses.BadResponse;
+import com.example.demo.exceptions.NoUserSearchResult;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
@@ -13,15 +14,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProjectUserRoleLinkService projectUserRoleLinkService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ProjectUserRoleLinkService projectUserRoleLinkService) {
         this.userRepository = userRepository;
+        this.projectUserRoleLinkService = projectUserRoleLinkService;
     }
 
     public User save ( User user ) throws UserAlreadyExists {
@@ -67,7 +72,12 @@ public class UserService {
         return this.save(currentUser);
     }
 
-    public List<User> searchByUsername (String username ) throws UserNotFound {
-        return userRepository.findByUsernameContaining(username).orElseThrow(UserNotFound::new);
+    public List<User> searchByUsername (String username, Long projectId ) throws NoUserSearchResult{
+        List<Long> projectUserIds = projectUserRoleLinkService.findAllUsersIdsByProjectId(projectId);
+
+        return userRepository.findByUsernameContaining(username).orElseThrow(NoUserSearchResult::new)
+                .stream()
+                .filter(u -> !projectUserIds.contains(u.getId()))
+                .collect(Collectors.toList());
     }
 }

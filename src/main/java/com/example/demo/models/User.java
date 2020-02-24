@@ -21,7 +21,9 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Entity
 @Table(name = "users")
 @Data
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "created_tasks", "assigned_tasks", "created_at", "updated_at", "location", "phone_number", "password" }, allowSetters= true)
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "created_tasks",
+        "assigned_tasks", "created_at", "updated_at", "location", "phone_number", "password",
+        "notifications_by", "notifications_to"}, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class User {
 

@@ -2,21 +2,24 @@ package com.example.demo.dto.requests;
 
 public class InviteRequest {
 
-    private Long invitedId;
+    private String username;
 
     private Long projectId;
 
-    public InviteRequest(Long invitedId, Long projectId) {
-        this.invitedId = invitedId;
+    private Long roleId;
+
+    public InviteRequest(String username, Long projectId, Long roleId) {
+        this.username = username;
         this.projectId = projectId;
+        this.roleId = roleId;
     }
 
-    public Long getInvitedId() {
-        return invitedId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setInvitedId(Long invitedId) {
-        this.invitedId = invitedId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getProjectId() {
@@ -25,5 +28,13 @@ public class InviteRequest {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 }
