@@ -64,24 +64,13 @@ public class NotificationService {
 
     public List<NotificationResponse> convertToNotificationResponse (List<Notification> notifications) {
         List<NotificationResponse> notificationResponses = new ArrayList<>();
-        for (Notification notification : notifications) {
-            String projectName = null;
-            if ( notification.getProject() != null ) {
-                projectName = notification.getProject().getName();
-            }
-            String taskTitle = null;
-            if ( notification.getTask() != null ) {
-                taskTitle = notification.getTask().getTitle();
-            }
-            NotificationStatus notificationStatus = notification.getStatus();
-            NotificationType notificationType = notification.getType();
-            String firstName = notification.getNotified_by().getFirst_name();
-            String lastName = notification.getNotified_by().getLast_name();
-            InvitationStatus invitationStatus = notification.getInvitationStatus();
-            NotificationResponse notificationResponse = new NotificationResponse(notification.getId(), notificationStatus, notificationType, firstName, lastName,
-                    projectName, taskTitle, invitationStatus);
+        notifications.forEach(notification -> {
+            NotificationResponse notificationResponse = new NotificationResponse(notification.getId(), notification.getStatus(),
+                    notification.getType(), notification.getNotified_by().getFirst_name(), notification.getNotified_by().getLast_name(),
+                    notification.getProject().getName(), notification.getTask() == null ? null : notification.getTask()
+                    .getTitle(), notification.getInvitationStatus());
             notificationResponses.add(notificationResponse);
-        }
+        });
         return notificationResponses;
     }
 

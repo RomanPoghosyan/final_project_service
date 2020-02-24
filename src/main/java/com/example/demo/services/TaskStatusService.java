@@ -38,19 +38,18 @@ public class TaskStatusService {
         taskStatus.setTitle(addTaskStatusRequest.getName());
         taskStatus.setProject(project);
         TaskStatus saved = taskStatusRepository.save(taskStatus);
-
-        try{
+        try {
             List<Long> taskStatusesOrder = project.getTaskStatusesOrder();
             taskStatusesOrder.add(saved.getId());
             project.setTaskStatusesOrder(taskStatusesOrder);
-        } catch (Exception e){
+        } catch (Exception e) {
             project.setTaskStatusesOrder(Arrays.asList(saved.getId()));
         }
         projectService.save(project);
         return saved;
     }
 
-    public TaskStatus findById (Long taskStatusId ) throws TaskStatusNotFound {
+    public TaskStatus findById(Long taskStatusId) throws TaskStatusNotFound {
         return taskStatusRepository.findById(taskStatusId).orElseThrow(TaskStatusNotFound::new);
     }
 

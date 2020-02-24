@@ -18,5 +18,6 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
     public List<Notification> findAllByStatusOrderByCreatedAtDesc(NotificationStatus notificationStatus);
     public List<Notification> findTop5ByStatus(NotificationStatus status);
     public List<Notification> findAllByNotifiedToOrderByCreatedAtDesc(User notifiedTo);
+    public List<Notification> countAllByIdAndStatus(Long id, NotificationStatus status);
 }
 
