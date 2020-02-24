@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.dto.responses.UserResponse;
+import com.example.demo.exceptions.NotFoundAnyPrivileges;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.exceptions.UserNotFound;
@@ -32,5 +33,10 @@ public class RoleController {
     @GetMapping("/{projectId}")
     public ResponseEntity<Response> getRolesByProjectId(@PathVariable Long projectId, Authentication authentication) throws ProjectNotFound {
         return new ResponseEntity<>(new OkResponse(roleService.findByProjectId(projectId)), HttpStatus.OK);
+    }
+
+    @GetMapping("/privileges")
+    public ResponseEntity<Response> getPrivileges() throws NotFoundAnyPrivileges {
+        return new ResponseEntity<>(new OkResponse(roleService.getAllPrivileges()), HttpStatus.OK);
     }
 }

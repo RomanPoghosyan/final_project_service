@@ -1,11 +1,13 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.responses.RolesResponse;
+import com.example.demo.exceptions.NotFoundAnyPrivileges;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.RoleNotFound;
 import com.example.demo.models.Privilege;
 import com.example.demo.models.Project;
 import com.example.demo.models.Role;
+import com.example.demo.repos.PrivilegeRepository;
 import com.example.demo.repos.ProjectRepository;
 import com.example.demo.repos.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,14 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
     private final ProjectRepository projectRepository;
+    private final PrivilegeRepository privilegeRepository;
+
 
     @Autowired
-    public RoleService(RoleRepository roleRepository, ProjectRepository projectRepository) {
+    public RoleService(RoleRepository roleRepository, ProjectRepository projectRepository, PrivilegeRepository privilegeRepository) {
         this.roleRepository = roleRepository;
         this.projectRepository = projectRepository;
+        this.privilegeRepository = privilegeRepository;
     }
 
     public Role save (Role role) {
@@ -54,6 +59,10 @@ public class RoleService {
                 });
 
         return rolesResponses;
+    }
+
+    public List<Privilege> getAllPrivileges() throws NotFoundAnyPrivileges {
+        return (List<Privilege>) privilegeRepository.findAll();
     }
 }
 

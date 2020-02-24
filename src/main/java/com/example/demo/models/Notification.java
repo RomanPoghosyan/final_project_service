@@ -40,6 +40,8 @@ public class Notification {
     @ManyToOne
     private Task task;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "invitationStatus")
     private InvitationStatus invitationStatus;
 
     private Long roleId;

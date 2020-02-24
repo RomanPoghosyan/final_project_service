@@ -22,6 +22,10 @@ public class Role {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private RoleType type;
+
     @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
 
