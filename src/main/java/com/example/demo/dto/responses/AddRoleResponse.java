@@ -1,15 +1,25 @@
 package com.example.demo.dto.responses;
 
-import com.example.demo.models.MicroTask;
 import com.example.demo.models.RoleType;
 
 import java.util.List;
 
-public class RolesResponse {
+public class AddRoleResponse {
+
     private Long id;
+
     private String name;
+
     private RoleType type;
+
     private List<Long> privileges;
+
+    public AddRoleResponse(Long id, String name, RoleType type, List<Long> privileges) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.privileges = privileges;
+    }
 
     public Long getId() {
         return id;

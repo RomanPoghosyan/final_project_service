@@ -34,14 +34,14 @@ public class Role {
             name = "project_roles",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id"))
-    private List<Privilege> privileges;
+    private List<Privilege> privileges = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -57,6 +57,14 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public RoleType getType() {
+        return type;
+    }
+
+    public void setType(RoleType type) {
+        this.type = type;
     }
 
     public List<ProjectUserRoleLink> getProjectUserRoleLinks() {

@@ -143,6 +143,7 @@ public class NotificationService {
         } else {
             notification.setInvitationStatus(InvitationStatus.REJECTED);
         }
+        notification.setStatus(NotificationStatus.SEEN);
 
         save(notification);
         return notification;
