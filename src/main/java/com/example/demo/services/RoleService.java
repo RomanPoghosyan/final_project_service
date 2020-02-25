@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.requests.AddPrivilegeRequest;
 import com.example.demo.dto.requests.AddRoleRequest;
 import com.example.demo.dto.responses.AddRoleResponse;
 import com.example.demo.dto.responses.RolesResponse;
@@ -51,6 +52,13 @@ public class RoleService {
         role.setPrivileges(privileges);
         Role newRole = roleRepository.save(role);
         return new AddRoleResponse(newRole.getId(), newRole.getName(), newRole.getType(), addRoleRequest.getPrivilegesIds());
+    }
+
+    public Role addPrivilege (AddPrivilegeRequest addPrivilegeRequest) throws RoleNotFound, PrivilegeNotFound {
+        Role role = roleRepository.findById(addPrivilegeRequest.getRoleId()).orElseThrow(RoleNotFound::new);
+        Privilege privilege = privilegeRepository.findById(addPrivilegeRequest.getPrivilegeId()).orElseThrow(PrivilegeNotFound::new);
+        role.getPrivileges().add(privilege);
+        return roleRepository.save(role);
     }
 
     public Role findById ( Long id ) throws RoleNotFound {

@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.requests.AddPrivilegeRequest;
 import com.example.demo.dto.requests.AddRoleRequest;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
@@ -37,4 +38,11 @@ public class RoleController {
     public ResponseEntity<Response> addRole(@RequestBody AddRoleRequest addRoleRequest, Authentication authentication) throws ProjectNotFound, PrivilegeNotFound {
         return new ResponseEntity<>(new OkResponse(roleService.add(addRoleRequest)), HttpStatus.OK);
     }
+
+    @PutMapping(consumes={"application/json"})
+    public ResponseEntity<Response> changePrivilege(@RequestBody AddPrivilegeRequest addPrivilegeRequest, Authentication authentication) throws ProjectNotFound, PrivilegeNotFound, RoleNotFound {
+        return new ResponseEntity<>(new OkResponse(roleService.addPrivilege(addPrivilegeRequest)), HttpStatus.OK);
+    }
+
+
 }
