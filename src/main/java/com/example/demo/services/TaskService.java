@@ -1,8 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.requests.TaskRequest;
-import com.example.demo.dto.responses.OkResponse;
-import com.example.demo.dto.responses.Response;
+import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.exceptions.TaskStatusNotFound;
@@ -13,11 +12,11 @@ import com.example.demo.models.TaskStatus;
 import com.example.demo.models.User;
 import com.example.demo.repos.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,20 +35,20 @@ public class TaskService {
         this.taskStatusService = taskStatusService;
     }
 
-    public Task save (TaskRequest taskRequest, Principal principal ) throws UserNotFound, ProjectNotFound, TaskStatusNotFound {
+    public Task save(TaskRequest taskRequest, Principal principal) throws UserNotFound, ProjectNotFound, TaskStatusNotFound {
         User user = userService.findByUsername(principal.getName());
         Task task = new Task();
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
-        TaskStatus taskStatus = taskStatusService.findById( taskRequest.getTask_status_id() );
+        TaskStatus taskStatus = taskStatusService.findById(taskRequest.getTask_status_id());
         task.setTask_status(taskStatus);
 
         task.setAssignor(user);
         Project project = projectService.findById(taskRequest.getProject_id());
-        if(taskRequest.getAssignee_id() != null) {
+        if (taskRequest.getAssignee_id() != null) {
             User assignee = userService.findById(taskRequest.getAssignee_id());
             task.setAssignee(assignee);
-        }else{
+        } else {
             task.setAssignee(null);
         }
         task.setProject(project);
@@ -62,19 +61,37 @@ public class TaskService {
         return task;
     }
 
-    public List<Task> findByAssigneeId (Long userId) throws TaskNotFound {
+    public List<Task> findByAssigneeId(Long userId) throws TaskNotFound {
         return taskRepository.findByAssigneeId(userId).orElseThrow(TaskNotFound::new);
     }
 
-    public List<Task> findByAssignorId (Long userId) throws TaskNotFound {
+    public List<Task> findByAssignorId(Long userId) throws TaskNotFound {
         return taskRepository.findByAssignorId(userId).orElseThrow(TaskNotFound::new);
     }
 
-    public List<Task> findByProjectId (Long projectId) throws TaskNotFound {
+    public List<Task> findByProjectId(Long projectId) throws TaskNotFound {
         return taskRepository.findByProjectId(projectId).orElseThrow(TaskNotFound::new);
     }
 
-    public Task findById (Long taskId ) throws TaskNotFound {
+    public Task findById(Long taskId) throws TaskNotFound {
         return taskRepository.findById(taskId).orElseThrow(TaskNotFound::new);
+    }
+
+    public List<DailyTasksResponse> findByDueDateRange(LocalDateTime start, LocalDateTime end) throws TaskNotFound {
+        List<Task> taskList = taskRepository.findTaskByDueDateGreaterThanAndDueDateLessThan(start, end).orElse(new ArrayList<>());
+        List<DailyTasksResponse> dailyTasksResponses = mapToDailyTasksResponse(taskList);
+        return dailyTasksResponses;
+    }
+
+    public List<DailyTasksResponse> mapToDailyTasksResponse(List<Task> tasks) {
+        List<DailyTasksResponse> dailyTasksResponses = new ArrayList<>();
+        for (Task task : tasks) {
+            Long id = task.getId();
+            String title = task.getTitle();
+            LocalDateTime dueDate = task.getDueDate();
+            DailyTasksResponse dailyTasksResponse = new DailyTasksResponse(id, title, dueDate);
+            dailyTasksResponses.add(dailyTasksResponse);
+        }
+        return dailyTasksResponses;
     }
 }

@@ -2,7 +2,6 @@ package com.example.demo.dto.responses;
 
 import com.example.demo.models.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

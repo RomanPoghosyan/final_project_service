@@ -1,18 +1,28 @@
 package com.example.demo.models;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "tasks")
 @Data
-@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status", "notifications" }, allowSetters= true)
-//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "project", "task_status", "notifications"}, allowSetters = true)
+
 public class Task {
 
     @Id
@@ -45,9 +55,34 @@ public class Task {
     private List<Comment> comments;
 
     @OneToMany
-//    @JsonBackReference
     @JoinColumn(name = "task_id")
     private List<Notification> notifications;
+
+    @CreationTimestamp
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate createdDate;
+
+    @CreationTimestamp
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime dueDate;
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
 
     public Long getId() {
         return id;

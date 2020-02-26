@@ -1,17 +1,13 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.responses.BadResponse;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
 import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
