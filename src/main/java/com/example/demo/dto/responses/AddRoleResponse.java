@@ -12,13 +12,13 @@ public class AddRoleResponse {
 
     private RoleType type;
 
-    private List<Long> privileges;
+    private List<Long> privilegesIds;
 
-    public AddRoleResponse(Long id, String name, RoleType type, List<Long> privileges) {
+    public AddRoleResponse(Long id, String name, RoleType type, List<Long> privilegesIds) {
         this.id = id;
         this.name = name;
         this.type = type;
-        this.privileges = privileges;
+        this.privilegesIds = privilegesIds;
     }
 
     public Long getId() {
@@ -45,11 +45,11 @@ public class AddRoleResponse {
         this.type = type;
     }
 
-    public List<Long> getPrivileges() {
-        return privileges;
+    public List<Long> getPrivilegesIds() {
+        return privilegesIds;
     }
 
-    public void setPrivileges(List<Long> privileges) {
-        this.privileges = privileges;
+    public void setPrivilegesIds(List<Long> privilegesIds) {
+        this.privilegesIds = privilegesIds;
     }
 }

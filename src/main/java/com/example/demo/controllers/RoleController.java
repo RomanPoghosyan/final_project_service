@@ -1,10 +1,11 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.requests.AddPrivilegeRequest;
+import com.example.demo.dto.requests.EditPrivilegeRequest;
 import com.example.demo.dto.requests.AddRoleRequest;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.exceptions.*;
+import com.example.demo.models.Role;
 import com.example.demo.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,14 @@ public class RoleController {
         return new ResponseEntity<>(new OkResponse(roleService.add(addRoleRequest)), HttpStatus.OK);
     }
 
-    @PutMapping(consumes={"application/json"})
-    public ResponseEntity<Response> changePrivilege(@RequestBody AddPrivilegeRequest addPrivilegeRequest, Authentication authentication) throws ProjectNotFound, PrivilegeNotFound, RoleNotFound {
-        return new ResponseEntity<>(new OkResponse(roleService.addPrivilege(addPrivilegeRequest)), HttpStatus.OK);
+    @PutMapping(value = "/privilege", consumes={"application/json"})
+    public ResponseEntity<Response> editRolePrivilege(@RequestBody EditPrivilegeRequest editPrivilegeRequest, Authentication authentication) throws ProjectNotFound, PrivilegeNotFound, RoleNotFound {
+        if(editPrivilegeRequest.getAddition()){
+            Role role = roleService.addPrivilege(editPrivilegeRequest);
+            return new ResponseEntity<>(new OkResponse(roleService.save(role)), HttpStatus.OK);
+        }else {
+            Role role = roleService.removePrivilege(editPrivilegeRequest);
+            return new ResponseEntity<>(new OkResponse(roleService.save(role)), HttpStatus.OK);
+        }
     }
-
-
 }

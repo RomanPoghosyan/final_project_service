@@ -1,6 +1,5 @@
 package com.example.demo.dto.responses;
 
-import com.example.demo.models.MicroTask;
 import com.example.demo.models.RoleType;
 
 import java.util.List;
@@ -9,7 +8,7 @@ public class RolesResponse {
     private Long id;
     private String name;
     private RoleType type;
-    private List<Long> privileges;
+    private List<Long> privilegesIds;
 
     public Long getId() {
         return id;
@@ -35,11 +34,11 @@ public class RolesResponse {
         this.type = type;
     }
 
-    public List<Long> getPrivileges() {
-        return privileges;
+    public List<Long> getPrivilegesIds() {
+        return privilegesIds;
     }
 
-    public void setPrivileges(List<Long> privileges) {
-        this.privileges = privileges;
+    public void setPrivilegesIds(List<Long> privilegesIds) {
+        this.privilegesIds = privilegesIds;
     }
 }

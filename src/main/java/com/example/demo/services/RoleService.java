@@ -1,6 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.requests.AddPrivilegeRequest;
+import com.example.demo.dto.requests.EditPrivilegeRequest;
 import com.example.demo.dto.requests.AddRoleRequest;
 import com.example.demo.dto.responses.AddRoleResponse;
 import com.example.demo.dto.responses.RolesResponse;
@@ -54,11 +54,22 @@ public class RoleService {
         return new AddRoleResponse(newRole.getId(), newRole.getName(), newRole.getType(), addRoleRequest.getPrivilegesIds());
     }
 
-    public Role addPrivilege (AddPrivilegeRequest addPrivilegeRequest) throws RoleNotFound, PrivilegeNotFound {
-        Role role = roleRepository.findById(addPrivilegeRequest.getRoleId()).orElseThrow(RoleNotFound::new);
-        Privilege privilege = privilegeRepository.findById(addPrivilegeRequest.getPrivilegeId()).orElseThrow(PrivilegeNotFound::new);
+    public Role addPrivilege (EditPrivilegeRequest editPrivilegeRequest) throws RoleNotFound, PrivilegeNotFound {
+        Role role = roleRepository.findById(editPrivilegeRequest.getRoleId()).orElseThrow(RoleNotFound::new);
+        Privilege privilege = privilegeRepository.findById(editPrivilegeRequest.getPrivilegeId()).orElseThrow(PrivilegeNotFound::new);
         role.getPrivileges().add(privilege);
-        return roleRepository.save(role);
+//        privilege.getRoles().add(role);
+//        privilegeRepository.save(privilege);
+        return role;
+    }
+
+    public Role removePrivilege (EditPrivilegeRequest editPrivilegeRequest) throws RoleNotFound, PrivilegeNotFound {
+        Role role = roleRepository.findById(editPrivilegeRequest.getRoleId()).orElseThrow(RoleNotFound::new);
+        Privilege privilege = privilegeRepository.findById(editPrivilegeRequest.getPrivilegeId()).orElseThrow(PrivilegeNotFound::new);
+        role.getPrivileges().remove(privilege);
+//        privilege.getRoles().remove(role);
+//        privilegeRepository.save(privilege);
+        return role;
     }
 
     public Role findById ( Long id ) throws RoleNotFound {
@@ -79,7 +90,7 @@ public class RoleService {
                                                         .stream()
                                                         .map(Privilege::getId)
                                                         .collect(Collectors.toList());
-                    rolesResponse.setPrivileges(privilegesIds);
+                    rolesResponse.setPrivilegesIds(privilegesIds);
                     rolesResponses.add(rolesResponse);
                 });
 
