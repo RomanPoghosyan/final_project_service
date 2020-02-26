@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.responses.*;
+import com.example.demo.exceptions.NoUserSearchResult;
 import com.example.demo.exceptions.UserAlreadyExists;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.User;
@@ -35,9 +36,9 @@ public class UserController {
         return new ResponseEntity<>(new OkResponse((userResponse)), HttpStatus.OK);
     }
 
-    @GetMapping("/search/{username}")
-    public ResponseEntity<Response> searchByUsername(@PathVariable String username, Authentication authentication) throws UserNotFound {
-        List<User> users = userService.searchByUsername(username);
+    @GetMapping("/search/{username}/{projectId}")
+    public ResponseEntity<Response> searchByUsername(@PathVariable String username, @PathVariable Long projectId, Authentication authentication) throws NoUserSearchResult {
+        List<User> users = userService.searchByUsername(username, projectId);
         return new ResponseEntity<>(new OkResponse(users), HttpStatus.OK);
     }
 

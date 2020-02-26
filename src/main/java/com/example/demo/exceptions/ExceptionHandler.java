@@ -45,4 +45,34 @@ public class ExceptionHandler {
     public ResponseEntity<BadResponse> notificationByNotificationIdNotFound(){
         return new ResponseEntity<>(new BadResponse(Arrays.asList("There isn't notification by given id!")), HttpStatus.NOT_FOUND);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(NoUserSearchResult.class)
+    public ResponseEntity<BadResponse> noUserSearchResult(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("No results")), HttpStatus.OK);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(PrivilegeNotFound.class)
+    public ResponseEntity<BadResponse> privilegeNotFound(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Privilege not found!")), HttpStatus.OK);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(ProjectUserRoleLinkNotFound.class)
+    public ResponseEntity<BadResponse> projectUserRoleLinkNotFound(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Something went wrong!")), HttpStatus.OK);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(RoleNotFound.class)
+    public ResponseEntity<BadResponse> roleNotFound(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Role not found!")), HttpStatus.OK);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(TaskNotFound.class)
+    public ResponseEntity<BadResponse> taskNotFound(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Tasks not found!")), HttpStatus.OK);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(TaskStatusNotFound.class)
+    public ResponseEntity<BadResponse> taskStatusNotFound(){
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("Something went wrong!")), HttpStatus.OK);
+    }
 }
