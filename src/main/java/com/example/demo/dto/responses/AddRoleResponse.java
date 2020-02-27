@@ -4,11 +4,22 @@ import com.example.demo.models.RoleType;
 
 import java.util.List;
 
-public class RolesResponse {
+public class AddRoleResponse {
+
     private Long id;
+
     private String name;
+
     private RoleType type;
+
     private List<Long> privilegesIds;
+
+    public AddRoleResponse(Long id, String name, RoleType type, List<Long> privilegesIds) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.privilegesIds = privilegesIds;
+    }
 
     public Long getId() {
         return id;
