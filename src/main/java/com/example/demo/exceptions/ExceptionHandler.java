@@ -38,7 +38,7 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(ProjectsByUserIdNotFound.class)
     public ResponseEntity<BadResponse> projectsByUserIdNotFound(){
-        return new ResponseEntity<>(new BadResponse(Arrays.asList("User doesn't have any project")), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new BadResponse(Arrays.asList("User doesn't have any project")), HttpStatus.OK);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(NotificationNotFound.class)
