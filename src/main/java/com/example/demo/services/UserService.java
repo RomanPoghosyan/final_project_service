@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -79,5 +80,11 @@ public class UserService {
                 .stream()
                 .filter(u -> !projectUserIds.contains(u.getId()))
                 .collect(Collectors.toList());
+    }
+
+    public User setFbToken ( String token, Authentication authentication ) {
+        User currentUser = userRepository.findByUsername(authentication.getName()).get();
+        currentUser.setFb_token(token);
+        return currentUser;
     }
 }

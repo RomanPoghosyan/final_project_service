@@ -71,7 +71,7 @@ public class NotificationService {
         List<NotificationResponse> notificationResponses = new ArrayList<>();
         notifications.forEach(notification -> {
             NotificationResponse notificationResponse = new NotificationResponse(notification.getId(), notification.getStatus(),
-                    notification.getType(), notification.getNotified_by().getFirst_name(), notification.getNotified_by().getLast_name(),
+                    notification.getType(), notification.getNotifiedBy().getFirst_name(), notification.getNotifiedBy().getLast_name(),
                     notification.getProject().getName(), notification.getTask() == null ? null : notification.getTask()
                     .getTitle(), notification.getInvitationStatus());
             notificationResponses.add(notificationResponse);

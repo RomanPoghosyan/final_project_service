@@ -38,6 +38,8 @@ public class User {
 
     private String last_name;
 
+    private String fb_token;
+
     @Column(unique = true)
     private String email;
 
@@ -207,5 +209,13 @@ public class User {
 
     public void setProjectUserRoleLinks(List<ProjectUserRoleLink> projectUserRoleLinks) {
         this.projectUserRoleLinks = projectUserRoleLinks;
+    }
+
+    public String getFb_token() {
+        return fb_token;
+    }
+
+    public void setFb_token(String fb_token) {
+        this.fb_token = fb_token;
     }
 }
