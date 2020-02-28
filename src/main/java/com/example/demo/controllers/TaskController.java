@@ -28,14 +28,12 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Response> save(@RequestBody TaskRequest taskRequest, Principal principal) throws Exception {
+    public ResponseEntity<Response> save (@RequestBody TaskRequest taskRequest, Principal principal) throws Exception {
         Task task = taskService.save(taskRequest, principal);
         Long assignee_id = task.getAssignee() != null ? task.getAssignee().getId() : null;
         TaskMiniInfoResponse taskMiniInfoResponse = new TaskMiniInfoResponse(task.getId(), task.getTitle(), assignee_id, task.getMicro_tasks());
 
-        return new ResponseEntity<>(new OkResponse(new HashMap<Long, TaskMiniInfoResponse>() {{
-            put(taskMiniInfoResponse.getId(), taskMiniInfoResponse);
-        }}), HttpStatus.CREATED);
+        return new ResponseEntity<>(new OkResponse(new HashMap<Long, TaskMiniInfoResponse>(){{put(taskMiniInfoResponse.getId(), taskMiniInfoResponse);}}), HttpStatus.CREATED);
     }
 
     @GetMapping("byProject/{projectId}")

@@ -2,6 +2,7 @@ package com.example.demo.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.util.*;
 @Entity
 @Table(name = "roles")
 @Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "projectUserRoleLinks", "projects" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Role {
 
@@ -20,6 +22,10 @@ public class Role {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private RoleType type;
+
     @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectUserRoleLink> projectUserRoleLinks;
 
@@ -28,14 +34,14 @@ public class Role {
             name = "project_roles",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id"))
-    private List<Privilege> privileges;
+    private List<Privilege> privileges = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -51,6 +57,14 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public RoleType getType() {
+        return type;
+    }
+
+    public void setType(RoleType type) {
+        this.type = type;
     }
 
     public List<ProjectUserRoleLink> getProjectUserRoleLinks() {
