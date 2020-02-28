@@ -8,9 +8,14 @@ import com.example.demo.dto.responses.NotificationResponse;
 import com.example.demo.exceptions.*;
 import com.example.demo.models.*;
 import com.example.demo.repos.NotificationRepository;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +43,7 @@ public class NotificationService {
         this.projectUserRoleLinkService = projectUserRoleLinkService;
     }
 
-    public Notification inviteToProject(InviteRequest invitedRequest, Principal principal) throws ProjectNotFound, UserNotFound {
+    public Notification inviteToProject(InviteRequest invitedRequest, Principal principal) throws ProjectNotFound, UserNotFound, IOException {
         User inviter = userService.findByUsername(principal.getName());
         User invited = userService.findByUsername(invitedRequest.getUsername());
         Notification notification = new Notification();
@@ -50,6 +55,21 @@ public class NotificationService {
         notification.setProject(projectService.findById(invitedRequest.getProjectId()));
         notification.setInvitationStatus(InvitationStatus.PENDING);
         save(notification);
+        String apiKey = "AAAAoKWp3VM:APA91bFMjn87fPEUsUCtxJ4Loz0SsQ3GUb-1Al34ZoxaOP0x18ivCOhOTQhEhbg_YyYO790IOkzxwokjQuVs6AsbXuqD6guURCjEr_Qz8aAylndknxzMoyBnZWks7GR50IUEb0X5fT7L";
+        URL url = new URL("https://fcm.googleapis.com/fcm/send");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Authorization", "key=" + apiKey);
+        JSONObject notificationJSON = new JSONObject();
+        notificationJSON.put("title", "Invitation to the project!");
+        String notificationBody = notification.getNotifiedBy().getUsername() + " has invited you to the " + notification.getProject().getName() + "project!";
+        notificationJSON.put("body", notificationBody);
+        JSONObject message = new JSONObject();
+        message.put ("to", notification.getNotifiedTo().getFb_token());
+        message.put ("priority", "high");
+        message.put("notification", notificationJSON);
+        conn.setRequestProperty("body", message.toString());
         return notification;
     }
 
@@ -67,24 +87,13 @@ public class NotificationService {
 
     private List<NotificationResponse> convertToNotificationResponse (List<Notification> notifications) {
         List<NotificationResponse> notificationResponses = new ArrayList<>();
-        for (Notification notification : notifications) {
-            String projectName = null;
-            if ( notification.getProject() != null ) {
-                projectName = notification.getProject().getName();
-            }
-            String taskTitle = null;
-            if ( notification.getTask() != null ) {
-                taskTitle = notification.getTask().getTitle();
-            }
-            NotificationStatus notificationStatus = notification.getStatus();
-            NotificationType notificationType = notification.getType();
-            String firstName = notification.getNotifiedBy().getFirst_name();
-            String lastName = notification.getNotifiedBy().getLast_name();
-            InvitationStatus invitationStatus = notification.getInvitationStatus();
-            NotificationResponse notificationResponse = new NotificationResponse(notification.getId(), notificationStatus, notificationType, firstName, lastName,
-                    projectName, taskTitle, invitationStatus);
+        notifications.forEach(notification -> {
+            NotificationResponse notificationResponse = new NotificationResponse(notification.getId(), notification.getStatus(),
+                    notification.getType(), notification.getNotifiedBy().getFirst_name(), notification.getNotifiedBy().getLast_name(),
+                    notification.getProject().getName(), notification.getTask() == null ? null : notification.getTask()
+                    .getTitle(), notification.getInvitationStatus());
             notificationResponses.add(notificationResponse);
-        }
+        });
         return notificationResponses;
     }
 

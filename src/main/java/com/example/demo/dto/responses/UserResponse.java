@@ -24,6 +24,8 @@ public class UserResponse {
 
     private String phone_number;
 
+    private String fb_token;
+
     public UserResponse(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
@@ -34,6 +36,15 @@ public class UserResponse {
         this.updated_at = user.getUpdated_at();
         this.location = user.getLocation();
         this.phone_number = user.getPhoneNumber();
+        this.fb_token = user.getFb_token();
+    }
+
+    public String getFb_token() {
+        return fb_token;
+    }
+
+    public void setFb_token(String fb_token) {
+        this.fb_token = fb_token;
     }
 
     public Long getId() {

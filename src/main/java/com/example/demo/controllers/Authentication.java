@@ -66,6 +66,7 @@ public class Authentication {
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setFb_token(signupRequest.getFb_token());
         userService.save(user);
         return this.login(new LoginRequest(signupRequest.getUsername(), signupRequest.getPassword()));
     }

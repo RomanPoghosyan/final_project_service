@@ -6,6 +6,15 @@ public class SignupRequest {
     private String email;
     private String username;
     private String password;
+    private String fb_token;
+
+    public String getFb_token() {
+        return fb_token;
+    }
+
+    public void setFb_token(String fb_token) {
+        this.fb_token = fb_token;
+    }
 
     public String getUsername() {
         return username;

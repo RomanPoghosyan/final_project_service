@@ -47,4 +47,11 @@ public class UserController {
         UserResponse userResponse = new UserResponse(userService.update(user, authentication));
         return new ResponseEntity<>(new OkResponse(userResponse), HttpStatus.OK);
     }
+
+    @PutMapping("set-fb-token")
+    public ResponseEntity<Response> setFbToken ( @RequestBody String fbToken, Authentication authentication) throws UserAlreadyExists {
+        User currentUser = userService.setFbToken(fbToken, authentication);
+        userService.save(currentUser);
+        return new ResponseEntity<>(new OkResponse(currentUser), HttpStatus.OK);
+    }
 }

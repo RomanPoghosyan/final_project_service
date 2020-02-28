@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.core.Authentication;
+
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -34,7 +36,7 @@ public class NotificationController {
     }
 
     @PostMapping ("/invite")
-    public ResponseEntity<Response> inviteToProject (@RequestBody InviteRequest inviteRequest, Principal principal ) throws ProjectNotFound, UserNotFound {
+    public ResponseEntity<Response> inviteToProject (@RequestBody InviteRequest inviteRequest, Principal principal ) throws ProjectNotFound, UserNotFound, IOException {
         Notification notification = notificationService.inviteToProject(inviteRequest, principal);
         return new ResponseEntity<>(new OkResponse(notification), HttpStatus.CREATED);
     }
