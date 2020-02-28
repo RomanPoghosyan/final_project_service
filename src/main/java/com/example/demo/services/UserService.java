@@ -1,9 +1,12 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.requests.ChangeUserRoleRequest;
 import com.example.demo.dto.responses.BadResponse;
-import com.example.demo.exceptions.NoUserSearchResult;
-import com.example.demo.exceptions.UserAlreadyExists;
-import com.example.demo.exceptions.UserNotFound;
+import com.example.demo.dto.responses.ProjectUserResponse;
+import com.example.demo.exceptions.*;
+import com.example.demo.models.Project;
+import com.example.demo.models.ProjectUserRoleLink;
+import com.example.demo.models.Role;
 import com.example.demo.models.User;
 import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,25 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(UserNotFound::new);
     }
 
+    public List<ProjectUserResponse> findAllByProjectId (Long id) throws UserNotFound {
+        List<ProjectUserRoleLink> projectUserRoleLinks = projectUserRoleLinkService.findAllByProjectId(id);
+
+        return projectUserRoleLinks
+                .stream()
+                .map(purl -> {
+                    User user = purl.getUser();
+                    ProjectUserResponse projectUserResponse = new ProjectUserResponse();
+                    projectUserResponse.setId(user.getId());
+                    projectUserResponse.setUsername(user.getUsername());
+                    projectUserResponse.setFirst_name(user.getFirst_name());
+                    projectUserResponse.setLast_name(user.getLast_name());
+                    projectUserResponse.setEmail(user.getEmail());
+                    projectUserResponse.setRoleId(purl.getRole().getId());
+                    return projectUserResponse;
+                })
+                .collect(Collectors.toList());
+    }
+
     public User update (User user, Authentication authentication) throws UserNotFound, UserAlreadyExists {
         User currentUser = findByUsername(authentication.getName());
         if (!(currentUser.getUsername().equals(user.getUsername()))) {
@@ -81,5 +103,16 @@ public class UserService {
                 .stream()
                 .filter(u -> !projectUserIds.contains(u.getId()))
                 .collect(Collectors.toList());
+    }
+
+    public void changeUserRole(ChangeUserRoleRequest changeUserRoleRequest) throws UserNotFound, RoleNotFound {
+        Long projectId = changeUserRoleRequest.getProjectId();
+        Long userId = changeUserRoleRequest.getUserId();
+        Role role = roleService.findById(changeUserRoleRequest.getRoleId());
+        ProjectUserRoleLink projectUserRoleLink = projectUserRoleLinkService.findByProjectIdAndUserId(projectId, userId);
+
+        projectUserRoleLink.setRole(role);
+
+        projectUserRoleLinkService.save(projectUserRoleLink);
     }
 }

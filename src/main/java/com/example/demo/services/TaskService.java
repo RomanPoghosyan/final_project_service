@@ -1,6 +1,9 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.requests.TaskRequest;
+import com.example.demo.dto.responses.OkResponse;
+import com.example.demo.dto.responses.Response;
+import com.example.demo.dto.responses.TaskInfoResponse;
 import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
@@ -95,5 +98,23 @@ public class TaskService {
             dailyTasksResponses.add(dailyTasksResponse);
         }
         return dailyTasksResponses;
+    }
+
+    public TaskInfoResponse getTaskInfo (Long taskId ) throws TaskNotFound {
+        Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFound::new);
+
+        TaskInfoResponse taskInfoResponse = new TaskInfoResponse();
+        taskInfoResponse.setId(task.getId());
+        taskInfoResponse.setTitle(task.getTitle());
+        taskInfoResponse.setDescription(task.getDescription());
+        if(task.getAssignee() != null) {
+            taskInfoResponse.setAssigneeId(task.getAssignee().getId());
+        } else {
+            taskInfoResponse.setAssigneeId(null);
+        }
+        taskInfoResponse.setAssignorId(task.getAssignor().getId());
+        taskInfoResponse.setMicroTasks(task.getMicro_tasks());
+        taskInfoResponse.setComments(task.getComments());
+        return taskInfoResponse;
     }
 }
