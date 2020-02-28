@@ -22,11 +22,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ProjectUserRoleLinkService projectUserRoleLinkService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserService(UserRepository userRepository, ProjectUserRoleLinkService projectUserRoleLinkService) {
+    public UserService(UserRepository userRepository, ProjectUserRoleLinkService projectUserRoleLinkService, RoleService roleService) {
         this.userRepository = userRepository;
         this.projectUserRoleLinkService = projectUserRoleLinkService;
+        this.roleService = roleService;
     }
 
     public User save ( User user ) throws UserAlreadyExists {

@@ -1,14 +1,14 @@
 package com.example.demo.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "user", "role" }, allowSetters= true)
 //@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class ProjectUserRoleLink {
 

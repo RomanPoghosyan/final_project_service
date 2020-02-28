@@ -20,8 +20,8 @@ import java.util.List;
 @Entity
 @Table(name = "tasks")
 @Data
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "project", "task_status", "notifications"}, allowSetters = true)
-
+@JsonIgnoreProperties(value={ "hibernateLazyInitializer", "handler", "project", "task_status", "notifications" }, allowSetters= true)
+//@JsonIdentityInfo(generator= ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Task {
 
     @Id
