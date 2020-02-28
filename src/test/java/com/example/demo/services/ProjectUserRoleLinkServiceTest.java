@@ -37,7 +37,6 @@ public class ProjectUserRoleLinkServiceTest {
     public void saveSuccess(){
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
         ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
-
         projectUserRoleLinkService.save(projectUserRoleLink);
         verify(projectUserRoleLinkRepository).save(projectUserRoleLink);
     }

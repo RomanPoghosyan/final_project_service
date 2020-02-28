@@ -1,8 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.requests.TaskRequest;
-import com.example.demo.dto.responses.OkResponse;
-import com.example.demo.dto.responses.Response;
+import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.exceptions.TaskStatusNotFound;
@@ -18,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -76,5 +77,23 @@ public class TaskService {
 
     public Task findById (Long taskId ) throws TaskNotFound {
         return taskRepository.findById(taskId).orElseThrow(TaskNotFound::new);
+    }
+
+    public List<DailyTasksResponse> findByDueDateRange(LocalDateTime start, LocalDateTime end) throws TaskNotFound {
+        List<Task> taskList = taskRepository.findTaskByDueDateGreaterThanAndDueDateLessThan(start, end).orElse(new ArrayList<>());
+        List<DailyTasksResponse> dailyTasksResponses = mapToDailyTasksResponse(taskList);
+        return dailyTasksResponses;
+    }
+
+    public List<DailyTasksResponse> mapToDailyTasksResponse(List<Task> tasks) {
+        List<DailyTasksResponse> dailyTasksResponses = new ArrayList<>();
+        for (Task task : tasks) {
+            Long id = task.getId();
+            String title = task.getTitle();
+            LocalDateTime dueDate = task.getDueDate();
+            DailyTasksResponse dailyTasksResponse = new DailyTasksResponse(id, title, dueDate);
+            dailyTasksResponses.add(dailyTasksResponse);
+        }
+        return dailyTasksResponses;
     }
 }
