@@ -3,6 +3,8 @@ package com.example.demo.services;
 import com.example.demo.dto.requests.TaskRequest;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
+import com.example.demo.dto.responses.TaskInfoResponse;
+import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.exceptions.TaskStatusNotFound;
@@ -18,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -76,5 +80,41 @@ public class TaskService {
 
     public Task findById (Long taskId ) throws TaskNotFound {
         return taskRepository.findById(taskId).orElseThrow(TaskNotFound::new);
+    }
+
+    public List<DailyTasksResponse> findByDueDateRange(LocalDateTime start, LocalDateTime end) throws TaskNotFound {
+        List<Task> taskList = taskRepository.findTaskByDueDateGreaterThanAndDueDateLessThan(start, end).orElse(new ArrayList<>());
+        List<DailyTasksResponse> dailyTasksResponses = mapToDailyTasksResponse(taskList);
+        return dailyTasksResponses;
+    }
+
+    public List<DailyTasksResponse> mapToDailyTasksResponse(List<Task> tasks) {
+        List<DailyTasksResponse> dailyTasksResponses = new ArrayList<>();
+        for (Task task : tasks) {
+            Long id = task.getId();
+            String title = task.getTitle();
+            LocalDateTime dueDate = task.getDueDate();
+            DailyTasksResponse dailyTasksResponse = new DailyTasksResponse(id, title, dueDate);
+            dailyTasksResponses.add(dailyTasksResponse);
+        }
+        return dailyTasksResponses;
+    }
+
+    public TaskInfoResponse getTaskInfo (Long taskId ) throws TaskNotFound {
+        Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFound::new);
+
+        TaskInfoResponse taskInfoResponse = new TaskInfoResponse();
+        taskInfoResponse.setId(task.getId());
+        taskInfoResponse.setTitle(task.getTitle());
+        taskInfoResponse.setDescription(task.getDescription());
+        if(task.getAssignee() != null) {
+            taskInfoResponse.setAssigneeId(task.getAssignee().getId());
+        } else {
+            taskInfoResponse.setAssigneeId(null);
+        }
+        taskInfoResponse.setAssignorId(task.getAssignor().getId());
+        taskInfoResponse.setMicroTasks(task.getMicro_tasks());
+        taskInfoResponse.setComments(task.getComments());
+        return taskInfoResponse;
     }
 }

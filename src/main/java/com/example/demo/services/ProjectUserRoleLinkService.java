@@ -49,6 +49,14 @@ public class ProjectUserRoleLinkService {
         return projectUserRoleLinkRepository.findByUserId(id).orElseThrow(ProjectsByUserIdNotFound::new);
     }
 
+    public List<ProjectUserRoleLink> findAllByProjectId (Long id) throws UserNotFound {
+        return projectUserRoleLinkRepository.findByProjectId(id).orElseThrow(UserNotFound::new);
+    }
+
+    public ProjectUserRoleLink findByProjectIdAndUserId (Long projectId, Long userId) throws UserNotFound {
+        return projectUserRoleLinkRepository.findByProjectIdAndUserId(projectId, userId).orElseThrow(UserNotFound::new);
+    }
+
     public List<Long> findAllUsersIdsByProjectId (Long id) {
         return projectUserRoleLinkRepository.findByProjectId(id).orElse(new ArrayList<>())
                 .stream()

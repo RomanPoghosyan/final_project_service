@@ -1,9 +1,6 @@
 package com.example.demo.dto.requests;
 
-import com.example.demo.models.Project;
-import com.example.demo.models.Task;
-import com.example.demo.models.TaskStatus;
-import com.example.demo.models.User;
+import java.time.LocalDate;
 
 public class TaskRequest {
     private String title;
@@ -16,6 +13,16 @@ public class TaskRequest {
     private Long project_id;
 
     private Long assignee_id;
+
+    private LocalDate due_date;
+
+    public LocalDate getDue_date() {
+        return due_date;
+    }
+
+    public void setDue_date(LocalDate due_date) {
+        this.due_date = due_date;
+    }
 
     public String getTitle() {
         return title;

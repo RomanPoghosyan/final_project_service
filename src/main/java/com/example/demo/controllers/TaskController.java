@@ -1,4 +1,7 @@
 package com.example.demo.controllers;
+
+import com.example.demo.dto.responses.DailyTasksResponse;
+import com.example.demo.dto.responses.TaskInfoResponse;
 import com.example.demo.dto.responses.TaskMiniInfoResponse;
 import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.models.Task;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,9 +38,23 @@ public class TaskController {
         return new ResponseEntity<>(new OkResponse(new HashMap<Long, TaskMiniInfoResponse>(){{put(taskMiniInfoResponse.getId(), taskMiniInfoResponse);}}), HttpStatus.CREATED);
     }
 
-    @GetMapping("byProject/{projectId}")
+    @GetMapping("/byProject/{projectId}")
     public ResponseEntity<Response> findByProjectId(@PathVariable Long projectId) throws TaskNotFound {
         List<Task> tasks = taskService.findByProjectId(projectId);
         return new ResponseEntity<>(new OkResponse(tasks), HttpStatus.OK);
+    }
+
+    @GetMapping("/daily")
+    public ResponseEntity<Response> findDailyTasks() throws TaskNotFound {
+        LocalDateTime end = LocalDateTime.now().plusHours(12);
+        LocalDateTime start = LocalDateTime.now();
+        List<DailyTasksResponse> tasks = taskService.findByDueDateRange(start, end);
+        return new ResponseEntity<>(new OkResponse(tasks), HttpStatus.OK);
+    }
+
+    @GetMapping("/{taskId}")
+    public ResponseEntity<Response> getCurrentTaskInfo(@PathVariable Long taskId) throws TaskNotFound {
+        TaskInfoResponse task = taskService.getTaskInfo(taskId);
+        return new ResponseEntity<>(new OkResponse(task), HttpStatus.OK);
     }
 }
