@@ -13,4 +13,5 @@ public interface ProjectUserRoleLinkRepository extends CrudRepository<ProjectUse
     Optional<ProjectUserRoleLink> findById(Long id);
     Optional<List<ProjectUserRoleLink>> findByUserId(Long id);
     Optional<List<ProjectUserRoleLink>> findByProjectId(Long id);
+    Optional<ProjectUserRoleLink> findByProjectIdAndUserId(Long projectId, Long userId);
 }

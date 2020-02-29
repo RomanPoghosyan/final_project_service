@@ -1,19 +1,25 @@
 package com.example.demo.controllers;
 
+import com.example.demo.auth.CustomUser;
+import com.example.demo.dto.requests.ChangeUserRoleRequest;
+import com.example.demo.dto.requests.UserSettingsRequest;
 import com.example.demo.dto.responses.*;
-import com.example.demo.exceptions.NoUserSearchResult;
-import com.example.demo.exceptions.UserAlreadyExists;
-import com.example.demo.exceptions.UserNotFound;
+import com.example.demo.exceptions.*;
+import com.example.demo.models.Project;
 import com.example.demo.models.User;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.dto.responses.OkResponse;
+import com.example.demo.dto.responses.BadResponse;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,16 +48,21 @@ public class UserController {
         return new ResponseEntity<>(new OkResponse(users), HttpStatus.OK);
     }
 
+    @GetMapping("/all/{projectId:\\d+}")
+    public ResponseEntity<Response> findAllByUserId(@PathVariable Long projectId) throws UserNotFound {
+        List<ProjectUserResponse> users = userService.findAllByProjectId(projectId);
+        return new ResponseEntity<>(new OkResponse(users), HttpStatus.OK);
+    }
+
     @PutMapping
     public ResponseEntity<Response> changeCurrentUserData(@RequestBody User user, Authentication authentication) throws UserNotFound, UserAlreadyExists {
         UserResponse userResponse = new UserResponse(userService.update(user, authentication));
         return new ResponseEntity<>(new OkResponse(userResponse), HttpStatus.OK);
     }
 
-    @PutMapping("set-fb-token")
-    public ResponseEntity<Response> setFbToken ( @RequestBody String fbToken, Authentication authentication) throws UserAlreadyExists {
-        User currentUser = userService.setFbToken(fbToken, authentication);
-        userService.save(currentUser);
-        return new ResponseEntity<>(new OkResponse(currentUser), HttpStatus.OK);
+    @PutMapping("/role")
+    public ResponseEntity<Response> changeUserRole(@RequestBody ChangeUserRoleRequest changeUserRoleRequest, Authentication authentication) throws UserNotFound, UserAlreadyExists, RoleNotFound {
+        userService.changeUserRole(changeUserRoleRequest);
+        return new ResponseEntity<>(new OkResponse(null), HttpStatus.OK);
     }
 }

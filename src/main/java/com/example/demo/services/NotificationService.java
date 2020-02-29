@@ -79,6 +79,8 @@ public class NotificationService {
 
 
     public List<NotificationResponse> getNotifications(String username) throws UserNotFound, ExecutionException, InterruptedException {
+//        List<Notification> list = notificationRepository.findAllByOrderByCreatedAtDesc();
+//        System.out.println(list);
         User user = userService.findByUsername(username);
         List<Notification> notifications = notificationRepository.findAllByNotifiedToOrderByCreatedAtDesc(user);
         List<NotificationResponse> notificationResponses = convertToNotificationResponse(notifications);
