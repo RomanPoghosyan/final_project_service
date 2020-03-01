@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.requests.ChangeTaskDescriptionRequest;
+import com.example.demo.dto.requests.ChangeTaskTitleRequest;
 import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.dto.responses.TaskInfoResponse;
 import com.example.demo.dto.responses.TaskMiniInfoResponse;
@@ -56,5 +58,15 @@ public class TaskController {
     public ResponseEntity<Response> getCurrentTaskInfo(@PathVariable Long taskId) throws TaskNotFound {
         TaskInfoResponse task = taskService.getTaskInfo(taskId);
         return new ResponseEntity<>(new OkResponse(task), HttpStatus.OK);
+    }
+
+    @PutMapping("/title")
+    public ResponseEntity<Response> changeTitle(@RequestBody ChangeTaskTitleRequest changeTaskTitleRequest) throws TaskNotFound {
+        return new ResponseEntity<>(new OkResponse(taskService.changeTitle(changeTaskTitleRequest)), HttpStatus.OK);
+    }
+
+    @PutMapping("/description")
+    public ResponseEntity<Response> changeDescription(@RequestBody ChangeTaskDescriptionRequest changeTaskDescriptionRequest) throws TaskNotFound {
+        return new ResponseEntity<>(new OkResponse(taskService.changeDescription(changeTaskDescriptionRequest)), HttpStatus.OK);
     }
 }
