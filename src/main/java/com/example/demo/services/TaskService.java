@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.requests.ChangeTaskDescriptionRequest;
+import com.example.demo.dto.requests.ChangeTaskTitleRequest;
 import com.example.demo.dto.requests.TaskRequest;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
@@ -117,4 +119,20 @@ public class TaskService {
         taskInfoResponse.setComments(task.getComments());
         return taskInfoResponse;
     }
+
+    public String changeTitle (ChangeTaskTitleRequest changeTaskTitleRequest) throws TaskNotFound {
+        Task task = taskRepository.findById(changeTaskTitleRequest.getTaskId()).orElseThrow(TaskNotFound::new);
+        task.setTitle(changeTaskTitleRequest.getTitle());
+        taskRepository.save(task);
+        return task.getTitle();
+    }
+
+    public String changeDescription (ChangeTaskDescriptionRequest changeTaskDescriptionRequest) throws TaskNotFound {
+        Task task = taskRepository.findById(changeTaskDescriptionRequest.getTaskId()).orElseThrow(TaskNotFound::new);
+        task.setDescription(changeTaskDescriptionRequest.getDescription());
+        taskRepository.save(task);
+        return task.getDescription();
+    }
+
+
 }
