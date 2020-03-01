@@ -6,6 +6,7 @@ import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskStatusNotFound;
 import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
+import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.TaskStatus;
 import com.example.demo.models.User;
 import com.example.demo.repos.TaskStatusRepository;
@@ -57,6 +58,7 @@ public class TaskStatusService {
         TaskStatus taskStatus = taskStatusRepository.findById(taskReorderRequest.getColumnId()).orElseThrow(TaskStatusNotFound::new);
         taskStatus.setTaskIds(taskReorderRequest.getTaskIds());
         taskStatusRepository.save(taskStatus);
+        List<ProjectUserRoleLink> projectUserRoleLinks = taskStatus.getProject().getProjectUserRoleLinks();
         return taskReorderRequest.getTaskIds();
     }
 
