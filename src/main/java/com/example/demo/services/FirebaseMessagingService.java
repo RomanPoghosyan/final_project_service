@@ -44,6 +44,19 @@ public class FirebaseMessagingService {
         this.restTemplate.postForEntity(URL, entity, Object.class);
     }
 
+    public void sendAssignmentNotification(Notification notification) {
+        HttpHeaders headers = new HttpHeaders();
+        String notificationBody = notification.getNotifiedBy().getUsername() + " has assigned you the task " + notification.getTask().getTitle() + " in project " + notification.getProject().getName();
+        headers.set("Authorization", "key=" + API_KEY);
+        Map<String, Object> map = new HashMap<>();
+        map.put("to", notification.getNotifiedTo().getFb_token());
+        map.put("notification", new FbNotificationResponse(
+                "Task assignment!", CLICK_ACTION_URL, notificationBody
+        ));
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+        this.restTemplate.postForEntity(URL, entity, Object.class);
+    }
+
     public RestTemplate getRestTemplate() {
         return restTemplate;
     }
