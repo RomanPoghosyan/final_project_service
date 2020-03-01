@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 
 import com.example.demo.dto.requests.ColumnReorderRequest;
+import com.example.demo.dto.responses.TaskAnalitic;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
 import com.example.demo.exceptions.RoleNotFound;
@@ -56,5 +57,11 @@ public class ProjectController {
     @PutMapping(value = "/column-reorder", consumes={"application/json"})
     public ResponseEntity<Response> updateColumnOrder(@RequestBody ColumnReorderRequest columnReorderRequest, Authentication authentication) throws UserNotFound, RoleNotFound, ProjectNotFound {
         return new ResponseEntity<>(new OkResponse(projectService.updateColumnOrder(columnReorderRequest, authentication)), HttpStatus.OK);
+    }
+
+    @GetMapping("/{projectId}/data")
+    public ResponseEntity<Response> getProjectData ( @PathVariable Long projectId ) throws ProjectNotFound {
+        List<TaskAnalitic> taskAnalitics = projectService.getProjectData(projectId);
+        return new ResponseEntity<>(new OkResponse(taskAnalitics), HttpStatus.OK);
     }
 }

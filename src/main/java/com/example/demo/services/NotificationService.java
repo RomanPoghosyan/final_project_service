@@ -4,22 +4,21 @@ import com.example.demo.dto.requests.AdditionRequest;
 import com.example.demo.dto.requests.InviteRequest;
 import com.example.demo.dto.requests.NotificationStatusRequest;
 import com.example.demo.dto.requests.ReplyToInvitationRequest;
+import com.example.demo.dto.responses.FbNotificationResponse;
 import com.example.demo.dto.responses.NotificationResponse;
+import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.exceptions.*;
 import com.example.demo.models.*;
 import com.example.demo.repos.NotificationRepository;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -30,17 +29,18 @@ public class NotificationService {
     private TaskService taskService;
     private RoleService roleService;
     private ProjectUserRoleLinkService projectUserRoleLinkService;
-
+    private FirebaseMessagingService firebaseMessagingService;
     @Autowired
     public NotificationService(NotificationRepository notificationRepository, ProjectService projectService,
                                UserService userService, TaskService taskService, RoleService roleService,
-                               ProjectUserRoleLinkService projectUserRoleLinkService) {
+                               ProjectUserRoleLinkService projectUserRoleLinkService, FirebaseMessagingService firebaseMessagingService) {
         this.notificationRepository = notificationRepository;
         this.projectService = projectService;
         this.userService = userService;
         this.taskService = taskService;
         this.roleService = roleService;
         this.projectUserRoleLinkService = projectUserRoleLinkService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
     public Notification inviteToProject(InviteRequest invitedRequest, Principal principal) throws ProjectNotFound, UserNotFound, IOException {
@@ -55,21 +55,7 @@ public class NotificationService {
         notification.setProject(projectService.findById(invitedRequest.getProjectId()));
         notification.setInvitationStatus(InvitationStatus.PENDING);
         save(notification);
-        String apiKey = "AAAAoKWp3VM:APA91bFMjn87fPEUsUCtxJ4Loz0SsQ3GUb-1Al34ZoxaOP0x18ivCOhOTQhEhbg_YyYO790IOkzxwokjQuVs6AsbXuqD6guURCjEr_Qz8aAylndknxzMoyBnZWks7GR50IUEb0X5fT7L";
-        URL url = new URL("https://fcm.googleapis.com/fcm/send");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Authorization", "key=" + apiKey);
-        JSONObject notificationJSON = new JSONObject();
-        notificationJSON.put("title", "Invitation to the project!");
-        String notificationBody = notification.getNotifiedBy().getUsername() + " has invited you to the " + notification.getProject().getName() + "project!";
-        notificationJSON.put("body", notificationBody);
-        JSONObject message = new JSONObject();
-        message.put ("to", notification.getNotifiedTo().getFb_token());
-        message.put ("priority", "high");
-        message.put("notification", notificationJSON);
-        conn.setRequestProperty("body", message.toString());
+        firebaseMessagingService.sendInvitationMessage(notification);
         return notification;
     }
 

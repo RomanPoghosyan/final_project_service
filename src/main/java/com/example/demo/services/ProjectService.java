@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.dto.requests.ColumnReorderRequest;
 import com.example.demo.dto.responses.ProjectResponse;
+import com.example.demo.dto.responses.TaskAnalitic;
 import com.example.demo.dto.responses.TaskMiniInfoResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
@@ -13,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -114,6 +112,20 @@ public class ProjectService {
         project.setTaskStatusesOrder(columnReorderRequest.getColumnOrder());
         projectRepository.save(project);
         return columnReorderRequest.getColumnOrder();
+    }
+
+    public List<TaskAnalitic> getProjectData (Long projectId ) throws ProjectNotFound {
+        Project project = findById(projectId);
+        List<ProjectUserRoleLink> projectUserRoleLinks = project.getProjectUserRoleLinks();
+        List<TaskAnalitic> taskAnalitics = new ArrayList<>();
+        for(ProjectUserRoleLink projectUserRoleLink: projectUserRoleLinks) {
+            TaskAnalitic taskAnalitic = new TaskAnalitic(
+                    projectUserRoleLink.getUser().getUsername(),
+                    projectUserRoleLink.getUser().getAssigned_tasks().size()
+            );
+            taskAnalitics.add(taskAnalitic);
+        }
+        return taskAnalitics;
     }
 }
 
