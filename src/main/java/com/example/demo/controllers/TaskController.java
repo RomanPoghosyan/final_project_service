@@ -1,13 +1,13 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.requests.ChangeTaskDescriptionRequest;
-import com.example.demo.dto.requests.ChangeTaskTitleRequest;
+import com.example.demo.dto.requests.*;
 import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.dto.responses.TaskInfoResponse;
 import com.example.demo.dto.responses.TaskMiniInfoResponse;
+import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Task;
-import com.example.demo.dto.requests.TaskRequest;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.models.TaskStatus;
@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -68,5 +69,15 @@ public class TaskController {
     @PutMapping("/description")
     public ResponseEntity<Response> changeDescription(@RequestBody ChangeTaskDescriptionRequest changeTaskDescriptionRequest) throws TaskNotFound {
         return new ResponseEntity<>(new OkResponse(taskService.changeDescription(changeTaskDescriptionRequest)), HttpStatus.OK);
+    }
+
+    @PutMapping("/assign")
+    public ResponseEntity<Response> assignTask(@RequestBody AssignTaskRequest assignTaskRequest, Principal principal) throws TaskNotFound, UserNotFound, ProjectNotFound, IOException {
+        return new ResponseEntity<>(new OkResponse(taskService.assignTask(assignTaskRequest, principal)), HttpStatus.OK);
+    }
+
+    @PostMapping("/micro-task")
+    public ResponseEntity<Response> addMicroTask(@RequestBody AddMicroTaskRequest addMicroTaskRequest, Principal principal) throws TaskNotFound, UserNotFound, ProjectNotFound, IOException {
+        return new ResponseEntity<>(new OkResponse(taskService.addMicroTask(addMicroTaskRequest, principal)), HttpStatus.OK);
     }
 }

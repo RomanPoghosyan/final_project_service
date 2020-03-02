@@ -1,9 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.requests.AdditionRequest;
-import com.example.demo.dto.requests.InviteRequest;
-import com.example.demo.dto.requests.NotificationStatusRequest;
-import com.example.demo.dto.requests.ReplyToInvitationRequest;
+import com.example.demo.dto.requests.*;
 import com.example.demo.dto.responses.FbNotificationResponse;
 import com.example.demo.dto.responses.NotificationResponse;
 import com.example.demo.dto.responses.OkResponse;
@@ -56,6 +53,21 @@ public class NotificationService {
         notification.setInvitationStatus(InvitationStatus.PENDING);
         save(notification);
         firebaseMessagingService.sendInvitationMessage(notification);
+        return notification;
+    }
+
+    public Notification assignTask(AssignTaskRequest assignTaskRequest, Principal principal) throws ProjectNotFound, UserNotFound, IOException, TaskNotFound {
+        User assignor = userService.findByUsername(principal.getName());
+        User assignee = userService.findById(assignTaskRequest.getAssigneeId());
+        Notification notification = new Notification();
+        notification.setType(NotificationType.ASSIGNING);
+        notification.setStatus(NotificationStatus.NOT_SEEN);
+        notification.setNotifiedTo(assignee);
+        notification.setNotifiedBy(assignor);
+        notification.setTask(taskService.findById(assignTaskRequest.getTaskId()));
+        notification.setProject(projectService.findById(assignTaskRequest.getProjectId()));
+        save(notification);
+        firebaseMessagingService.sendAssignmentNotification(notification);
         return notification;
     }
 

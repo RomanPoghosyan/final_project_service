@@ -1,8 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.requests.ChangeTaskDescriptionRequest;
-import com.example.demo.dto.requests.ChangeTaskTitleRequest;
-import com.example.demo.dto.requests.TaskRequest;
+import com.example.demo.dto.requests.*;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.dto.responses.TaskInfoResponse;
@@ -11,16 +9,15 @@ import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.TaskNotFound;
 import com.example.demo.exceptions.TaskStatusNotFound;
 import com.example.demo.exceptions.UserNotFound;
-import com.example.demo.models.Project;
-import com.example.demo.models.Task;
-import com.example.demo.models.TaskStatus;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
 import com.example.demo.repos.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,13 +30,17 @@ public class TaskService {
     private UserService userService;
     private ProjectService projectService;
     private TaskStatusService taskStatusService;
+    private NotificationService notificationService;
 
-    @Autowired
-    public TaskService(TaskRepository taskRepository, UserService userService, ProjectService projectService, TaskStatusService taskStatusService) {
+    @Autowired @Lazy
+    public TaskService(TaskRepository taskRepository, UserService userService,
+                       ProjectService projectService, TaskStatusService taskStatusService,
+                       NotificationService notificationService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
         this.projectService = projectService;
         this.taskStatusService = taskStatusService;
+        this.notificationService = notificationService;
     }
 
     public Task save (TaskRequest taskRequest, Principal principal ) throws UserNotFound, ProjectNotFound, TaskStatusNotFound {
@@ -130,6 +131,26 @@ public class TaskService {
     public String changeDescription (ChangeTaskDescriptionRequest changeTaskDescriptionRequest) throws TaskNotFound {
         Task task = taskRepository.findById(changeTaskDescriptionRequest.getTaskId()).orElseThrow(TaskNotFound::new);
         task.setDescription(changeTaskDescriptionRequest.getDescription());
+        taskRepository.save(task);
+        return task.getDescription();
+    }
+
+    public String assignTask (AssignTaskRequest assignTaskRequest, Principal principal) throws TaskNotFound, UserNotFound, ProjectNotFound, IOException {
+        Task task = taskRepository.findById(assignTaskRequest.getTaskId()).orElseThrow(TaskNotFound::new);
+        User assignee = userService.findById(assignTaskRequest.getAssigneeId());
+        task.setAssignee(assignee);
+        taskRepository.save(task);
+        notificationService.assignTask(assignTaskRequest, principal);
+        return task.getDescription();
+    }
+
+    public String addMicroTask (AddMicroTaskRequest addMicroTaskRequest, Principal principal) throws TaskNotFound, UserNotFound, ProjectNotFound, IOException {
+        Task task = taskRepository.findById(addMicroTaskRequest.getTaskId()).orElseThrow(TaskNotFound::new);
+        MicroTask microTask = new MicroTask();
+        microTask.setDescription(addMicroTaskRequest.getDescription());
+        microTask.setStatus(MicroTaskStatus.NOT_DONE);
+        microTask.setTask(task);
+
         taskRepository.save(task);
         return task.getDescription();
     }
