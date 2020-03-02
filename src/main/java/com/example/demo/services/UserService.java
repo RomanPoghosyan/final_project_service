@@ -1,24 +1,16 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.requests.ChangeUserRoleRequest;
-import com.example.demo.dto.responses.BadResponse;
 import com.example.demo.dto.responses.ProjectUserResponse;
 import com.example.demo.exceptions.*;
-import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
 import com.example.demo.models.User;
 import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,9 +103,7 @@ public class UserService {
         Long userId = changeUserRoleRequest.getUserId();
         Role role = roleService.findById(changeUserRoleRequest.getRoleId());
         ProjectUserRoleLink projectUserRoleLink = projectUserRoleLinkService.findByProjectIdAndUserId(projectId, userId);
-
         projectUserRoleLink.setRole(role);
-
         projectUserRoleLinkService.save(projectUserRoleLink);
     }
 }

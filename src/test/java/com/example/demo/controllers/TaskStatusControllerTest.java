@@ -1,8 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.requests.AddTaskStatusRequest;
-import com.example.demo.exceptions.ProjectNotFound;
-import com.example.demo.exceptions.UserNotFound;
+import com.example.demo.dto.requests.TaskReorderRequest;
+import com.example.demo.exceptions.TaskStatusNotFound;
 import com.example.demo.services.ProjectService;
 import com.example.demo.services.TaskStatusService;
 import org.junit.Before;
@@ -10,8 +9,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
-
 import static org.mockito.Mockito.verify;
+
 
 public class TaskStatusControllerTest {
 
@@ -27,15 +26,15 @@ public class TaskStatusControllerTest {
     ProjectService projectService;
 
     @Mock
-    AddTaskStatusRequest addTaskStatusRequest;
-
-    @Mock
     Authentication authentication;
 
+    @Mock
+    TaskReorderRequest taskReorderRequest;
+
     @Test
-    public void addTaskStatusTest() throws UserNotFound, ProjectNotFound {
+    public void updateColumnOrderTest() throws TaskStatusNotFound {
         TaskStatusController taskStatusController = new TaskStatusController(taskStatusService, projectService);
-        taskStatusController.addTaskStatus(addTaskStatusRequest, authentication);
-        verify(taskStatusService).add(addTaskStatusRequest,authentication);
+        taskStatusController.updateColumnOrder(taskReorderRequest, authentication);
+        verify(taskStatusService).updateTaskOrder(taskReorderRequest, authentication);
     }
 }

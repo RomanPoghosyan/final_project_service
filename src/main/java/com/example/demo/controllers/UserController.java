@@ -1,27 +1,18 @@
 package com.example.demo.controllers;
 
-import com.example.demo.auth.CustomUser;
 import com.example.demo.dto.requests.ChangeUserRoleRequest;
-import com.example.demo.dto.requests.UserSettingsRequest;
 import com.example.demo.dto.responses.*;
 import com.example.demo.exceptions.*;
-import com.example.demo.models.Project;
 import com.example.demo.models.User;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.dto.responses.OkResponse;
-import com.example.demo.dto.responses.BadResponse;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)

@@ -1,8 +1,6 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.requests.TaskRequest;
-import com.example.demo.dto.responses.OkResponse;
-import com.example.demo.dto.responses.Response;
 import com.example.demo.dto.responses.TaskInfoResponse;
 import com.example.demo.dto.responses.DailyTasksResponse;
 import com.example.demo.exceptions.ProjectNotFound;
@@ -15,8 +13,6 @@ import com.example.demo.models.TaskStatus;
 import com.example.demo.models.User;
 import com.example.demo.repos.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
