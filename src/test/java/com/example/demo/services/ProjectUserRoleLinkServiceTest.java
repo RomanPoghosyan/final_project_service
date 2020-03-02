@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.exceptions.ProjectUserRoleLinkNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
+import com.example.demo.exceptions.UserNotFound;
 import com.example.demo.models.Project;
 import com.example.demo.models.ProjectUserRoleLink;
 import com.example.demo.models.Role;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,16 +27,19 @@ import static org.mockito.Mockito.when;
 
 public class ProjectUserRoleLinkServiceTest {
 
+    ProjectUserRoleLinkService projectUserRoleLinkService;
+
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
+        projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
     }
 
     @Mock
     ProjectUserRoleLinkRepository projectUserRoleLinkRepository;
 
     @Test
-    public void saveSuccess(){
+    public void saveSuccess() {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
         ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
         projectUserRoleLinkService.save(projectUserRoleLink);
@@ -85,16 +90,40 @@ public class ProjectUserRoleLinkServiceTest {
         projectUserRoleLinkService.findAllByUserId(1L);
     }
 
-    @Captor ArgumentCaptor<ProjectUserRoleLink> captor;
+    @Captor
+    ArgumentCaptor<ProjectUserRoleLink> captor;
+
     @Test
-    public void addSuccess(){
+    public void addSuccess() {
         ProjectUserRoleLinkService projectUserRoleLinkService = new ProjectUserRoleLinkService(projectUserRoleLinkRepository);
         Project project = new Project();
         User user = new User();
         Role role = new Role();
-
         projectUserRoleLinkService.add(project, user, role);
-
         verify(projectUserRoleLinkRepository).save(captor.capture());
+    }
+
+    @Test
+    public void testFindAllByProjectId() throws UserNotFound {
+        List<ProjectUserRoleLink> projectUserRoleLinks = new ArrayList<>();
+        when(projectUserRoleLinkRepository.findByProjectId(1L)).thenReturn(Optional.of(projectUserRoleLinks));
+        List<ProjectUserRoleLink> actual = projectUserRoleLinkService.findAllByProjectId(1L);
+        Assert.assertEquals(projectUserRoleLinks, actual);
+    }
+
+    @Test
+    public void testFindByProjectIdAndUserId() throws UserNotFound {
+        ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
+        when(projectUserRoleLinkRepository.findByProjectIdAndUserId(1L, 1L)).thenReturn(Optional.of(projectUserRoleLink));
+        ProjectUserRoleLink actual = projectUserRoleLinkService.findByProjectIdAndUserId(1L, 1L);
+        Assert.assertEquals(actual, projectUserRoleLink);
+    }
+
+    @Test
+    public void testFindAllUsersByIdsByProjectId() {
+        List<ProjectUserRoleLink> longList = new ArrayList<>();
+        when(projectUserRoleLinkRepository.findByProjectId(1L)).thenReturn(Optional.of(longList));
+        List<Long> actual = projectUserRoleLinkService.findAllUsersIdsByProjectId(1L);
+        Assert.assertEquals(actual,longList);
     }
 }

@@ -25,9 +25,13 @@ import static org.mockito.Mockito.when;
 
 public class ProjectServiceTest {
 
+    ProjectService projectService;
+
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
+        projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+
     }
 
     @Mock
@@ -49,7 +53,6 @@ public class ProjectServiceTest {
     public void testFindById() throws ProjectNotFound {
         ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
         Project project = new Project();
-
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         Project actual = projectService.findById(1L);
         Assert.assertEquals(actual, project);
@@ -57,10 +60,7 @@ public class ProjectServiceTest {
 
     @Test(expected = ProjectNotFound.class)
     public void testFindByIdFail() throws ProjectNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
-
         when(projectRepository.findById(2L)).thenReturn(Optional.empty());
-
         projectService.findById(2L);
     }
 
@@ -124,5 +124,4 @@ public class ProjectServiceTest {
 
         projectService.findAllByUserId(1L);
     }
-
 }

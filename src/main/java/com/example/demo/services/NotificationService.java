@@ -85,7 +85,7 @@ public class NotificationService {
         return notificationResponses;
     }
 
-    private List<NotificationResponse> convertToNotificationResponse (List<Notification> notifications) {
+    public List<NotificationResponse> convertToNotificationResponse (List<Notification> notifications) {
         List<NotificationResponse> notificationResponses = new ArrayList<>();
         notifications.forEach(notification -> {
             NotificationResponse notificationResponse = new NotificationResponse(notification.getId(), notification.getStatus(),

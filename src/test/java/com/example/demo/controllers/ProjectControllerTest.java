@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.requests.ColumnReorderRequest;
 import com.example.demo.dto.responses.ProjectResponse;
 import com.example.demo.exceptions.ProjectNotFound;
 import com.example.demo.exceptions.ProjectsByUserIdNotFound;
@@ -28,9 +29,12 @@ import static org.mockito.Mockito.when;
 
 public class ProjectControllerTest {
 
+    ProjectController projectController;
+
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
+        projectController = new ProjectController(projectService, userService, roleService);
     }
 
     @Mock
@@ -45,49 +49,48 @@ public class ProjectControllerTest {
     @Mock
     Authentication authentication;
 
-    @Test
-    public void testGetByIdSuccess() throws Exception {
-        ProjectController projectController = new ProjectController(projectService, userService, roleService);
-        ProjectResponse projectResponse = new ProjectResponse();
+    @Mock
+    ColumnReorderRequest columnReorderRequest;
 
+    @Test
+    public void testGetProjectByIdSuccess() throws Exception {
+        ProjectResponse projectResponse = new ProjectResponse();
         when(projectService.getFullProjectInfo(1L, authentication)).thenReturn(projectResponse);
         ResponseEntity<Response> actual = projectController.getProjectById(1L, authentication);
         Assert.assertEquals(actual.getBody().getBody(), projectResponse);
     }
 
     @Test(expected = ProjectNotFound.class)
-    public void testGetByIdFail() throws ProjectNotFound {
-        ProjectController projectController = new ProjectController(projectService, userService, roleService);
-
+    public void testGetProjectByIdFail() throws ProjectNotFound {
         when(projectService.getFullProjectInfo(2L, authentication)).thenThrow(new ProjectNotFound());
         projectController.getProjectById(2L, authentication);
     }
 
     @Test
     public void testAddProjectSuccess() throws UserNotFound, RoleNotFound {
-        ProjectController projectController = new ProjectController(projectService, userService, roleService);
         Project project = new Project();
-
         projectController.addProject(project, authentication);
         verify(projectService).add(project, authentication);
     }
 
     @Test
     public void testFindAllByUserId() throws ProjectsByUserIdNotFound {
-        ProjectController projectController = new ProjectController(projectService, userService, roleService);
         List<Project> projects = Arrays.asList(new Project(), new Project());
         when(projectService.findAllByUserId(1L)).thenReturn(projects);
-
         ResponseEntity<Response> actual = projectController.findAllByUserId(1L);
         Assert.assertEquals(Objects.requireNonNull(actual.getBody()).getBody(), projects);
     }
 
     @Test(expected = ProjectsByUserIdNotFound.class)
     public void testFindAllByUserIdFail() throws ProjectsByUserIdNotFound {
-        ProjectController projectController = new ProjectController(projectService, userService, roleService);
         when(projectService.findAllByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
-
         projectController.findAllByUserId(1L);
+    }
+
+    @Test
+    public void testUpdateColumnOrder() throws ProjectNotFound, UserNotFound, RoleNotFound {
+        projectController.updateColumnOrder(columnReorderRequest, authentication);
+        verify(projectService).updateColumnOrder(columnReorderRequest, authentication);
     }
 
 }
