@@ -27,14 +27,18 @@ public class ProjectService {
     private final ProjectUserRoleLinkService projectUserRoleLinkService;
     private final RoleService roleService;
     private final UserService userService;
+    private final FirebaseMessagingService firebaseMessagingService;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, ProjectUserRoleLinkService projectUserRoleLinkService, RoleService roleService, UserService userService) {
+    public ProjectService(ProjectRepository projectRepository,
+                          ProjectUserRoleLinkService projectUserRoleLinkService,
+                          RoleService roleService, UserService userService, FirebaseMessagingService firebaseMessagingService) {
 
         this.projectRepository = projectRepository;
         this.projectUserRoleLinkService = projectUserRoleLinkService;
         this.roleService = roleService;
         this.userService = userService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
 
@@ -111,6 +115,9 @@ public class ProjectService {
         Project project = projectRepository.findById(columnReorderRequest.getProjectId()).orElseThrow(ProjectNotFound::new);
         project.setTaskStatusesOrder(columnReorderRequest.getColumnOrder());
         projectRepository.save(project);
+        List<ProjectUserRoleLink> projectUserRoleLinks = project.getProjectUserRoleLinks();
+        firebaseMessagingService.notifyProjectUsers(projectUserRoleLinks,
+                authentication.getName(), NotificationType.BOARD_REORDER);
         return columnReorderRequest.getColumnOrder();
     }
 

@@ -151,8 +151,11 @@ public class NotificationService {
             notification.setInvitationStatus(InvitationStatus.REJECTED);
         }
         notification.setStatus(NotificationStatus.SEEN);
-
         save(notification);
+        if ( replyToInvitationRequest.isAccepted() ) {
+            firebaseMessagingService.notifyProjectUsers(notification.getProject().getProjectUserRoleLinks(),
+                    notification.getNotifiedTo().getUsername(), NotificationType.ACCEPT_INVITATION);
+        }
         return notification;
     }
 }

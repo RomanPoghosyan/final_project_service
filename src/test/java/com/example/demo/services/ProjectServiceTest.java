@@ -43,11 +43,15 @@ public class ProjectServiceTest {
     UserService userService;
 
     @Mock
+    FirebaseMessagingService firebaseMessagingService;
+
+    @Mock
     Authentication authentication;
 
     @Test
     public void testFindById() throws ProjectNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository,
+                projectUserRoleLinkService, roleService, userService, firebaseMessagingService);
         Project project = new Project();
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
@@ -57,7 +61,8 @@ public class ProjectServiceTest {
 
     @Test(expected = ProjectNotFound.class)
     public void testFindByIdFail() throws ProjectNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService,
+                roleService, userService, firebaseMessagingService);
 
         when(projectRepository.findById(2L)).thenReturn(Optional.empty());
 
@@ -66,7 +71,8 @@ public class ProjectServiceTest {
 
     @Test
     public void testSave() {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService,
+                roleService, userService, firebaseMessagingService);
         Project project = new Project();
 
         projectService.save(project);
@@ -75,7 +81,8 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddProjectSaveSuccess() throws UserNotFound, RoleNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService,
+                roleService, userService, firebaseMessagingService);
         Project project = new Project();
         User user = new User();
         Role role = new Role();
@@ -90,7 +97,8 @@ public class ProjectServiceTest {
 
     @Test
     public void testAddPURLAddSuccess() throws UserNotFound, RoleNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService,
+                roleService, userService, firebaseMessagingService);
         Project project = new Project();
         User user = new User();
         Role role = new Role();
@@ -105,7 +113,8 @@ public class ProjectServiceTest {
 
     @Test
     public void testFindAllByUserId() throws ProjectsByUserIdNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService,
+                roleService, userService, firebaseMessagingService);
         Project project = new Project();
         ProjectUserRoleLink projectUserRoleLink = new ProjectUserRoleLink();
         projectUserRoleLink.setProject(project);
@@ -119,7 +128,8 @@ public class ProjectServiceTest {
 
     @Test(expected = ProjectsByUserIdNotFound.class)
     public void testFindAllByUserIdFail() throws ProjectsByUserIdNotFound {
-        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService, roleService, userService);
+        ProjectService projectService = new ProjectService(projectRepository, projectUserRoleLinkService,
+                roleService, userService, firebaseMessagingService);
         when(projectUserRoleLinkService.findAllByUserId(1L)).thenThrow(new ProjectsByUserIdNotFound());
 
         projectService.findAllByUserId(1L);

@@ -1,5 +1,8 @@
 package com.example.demo.dto.responses;
 
+import com.example.demo.models.Notification;
+import com.example.demo.models.NotificationType;
+
 public class FbNotificationResponse {
     private String title;
 
@@ -7,8 +10,10 @@ public class FbNotificationResponse {
 
     private String body;
 
-    public FbNotificationResponse(String title, String click_action, String body) {
-        this.title = title;
+    private NotificationType notificationType;
+
+    public FbNotificationResponse(String click_action, String body, NotificationType notificationType) {
+        this.title = notificationType.toString();
         this.click_action = click_action;
         this.body = body;
     }
@@ -35,5 +40,14 @@ public class FbNotificationResponse {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+
+    public NotificationType getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(NotificationType notificationType) {
+        this.notificationType = notificationType;
     }
 }

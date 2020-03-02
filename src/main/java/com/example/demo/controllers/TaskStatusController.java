@@ -1,13 +1,10 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.requests.AddTaskStatusRequest;
-import com.example.demo.dto.requests.ColumnReorderRequest;
 import com.example.demo.dto.requests.TaskReorderRequest;
 import com.example.demo.exceptions.ProjectNotFound;
-import com.example.demo.exceptions.RoleNotFound;
 import com.example.demo.exceptions.TaskStatusNotFound;
 import com.example.demo.exceptions.UserNotFound;
-import com.example.demo.models.Project;
 import com.example.demo.dto.responses.OkResponse;
 import com.example.demo.dto.responses.Response;
 import com.example.demo.models.TaskStatus;

@@ -1,5 +1,7 @@
 package com.example.demo.models;
 
 public enum NotificationType {
-    INVITATION, DELETION, ASSIGNING, DEASSIGNING
+    INVITATION, ASSIGNING, TASK_REORDER, BOARD_REORDER, ADD_COLUMN, ADD_TASK,
+    ACCEPT_INVITATION
 }
+

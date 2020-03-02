@@ -31,16 +31,18 @@ public class TaskService {
     private ProjectService projectService;
     private TaskStatusService taskStatusService;
     private NotificationService notificationService;
+    private FirebaseMessagingService firebaseMessagingService;
 
     @Autowired @Lazy
     public TaskService(TaskRepository taskRepository, UserService userService,
                        ProjectService projectService, TaskStatusService taskStatusService,
-                       NotificationService notificationService) {
+                       NotificationService notificationService, FirebaseMessagingService firebaseMessagingService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
         this.projectService = projectService;
         this.taskStatusService = taskStatusService;
         this.notificationService = notificationService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
     public Task save (TaskRequest taskRequest, Principal principal ) throws UserNotFound, ProjectNotFound, TaskStatusNotFound {
@@ -66,6 +68,8 @@ public class TaskService {
         taskIds.add(task.getId());
         taskStatus.setTaskIds(taskIds);
         taskStatusService.save(taskStatus);
+        firebaseMessagingService.notifyProjectUsers(project.getProjectUserRoleLinks(),
+                user.getUsername(), NotificationType.ADD_TASK);
         return task;
     }
 

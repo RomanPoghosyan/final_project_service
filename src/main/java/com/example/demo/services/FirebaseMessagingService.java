@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.responses.FbNotificationResponse;
-import com.example.demo.models.Notification;
+import com.example.demo.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -26,32 +27,77 @@ public class FirebaseMessagingService {
 
     private static final String CLICK_ACTION_URL = "http://localhost:3000/";
 
+
+    private HttpHeaders headers;
+
     @Autowired
     public FirebaseMessagingService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
+        this.headers = new HttpHeaders();
+        headers.set("Authorization", "key=" + API_KEY);
     }
 
-    public void sendInvitationMessage(Notification notification) {
-        HttpHeaders headers = new HttpHeaders();
+
+    void notifyProjectUsers(List<ProjectUserRoleLink> projectUserRoleLinks,
+                            String username, NotificationType notificationType) {
+        for (ProjectUserRoleLink projectUserRoleLink : projectUserRoleLinks) {
+            User user = projectUserRoleLink.getUser();
+            if (!user.getUsername().equals(username)) {
+                if (notificationType == NotificationType.TASK_REORDER) {
+                    taskReorder(user);
+                } else if ( notificationType == NotificationType.BOARD_REORDER ) {
+                    boardReorder(user);
+                } else if ( notificationType == NotificationType.ADD_COLUMN ) {
+                    addColumn(user);
+                } else if ( notificationType == NotificationType.ADD_TASK ) {
+                    addTask(user);
+                } else if ( notificationType == NotificationType.ACCEPT_INVITATION ) {
+                    acceptInvitation(user, username);
+                }
+            }
+        }
+    }
+
+    void sendInvitationMessage(Notification notification) {
         String notificationBody = notification.getNotifiedBy().getUsername() + " has invited you to the " + notification.getProject().getName() + "project!";
-        headers.set("Authorization", "key=" + API_KEY);
-        Map<String, Object> map = new HashMap<>();
-        map.put("to", notification.getNotifiedTo().getFb_token());
-        map.put("notification", new FbNotificationResponse(
-                "Invitation to the project!", CLICK_ACTION_URL, notificationBody
-        ));
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
-        this.restTemplate.postForEntity(URL, entity, Object.class);
+        sendNotification(notification.getNotifiedTo().getFb_token(), notificationBody, NotificationType.INVITATION);
     }
 
-    public void sendAssignmentNotification(Notification notification) {
-        HttpHeaders headers = new HttpHeaders();
+    private void acceptInvitation ( User user, String username ) {
+        String notificationBody = username + " has accepted project invitation!";
+        sendNotification(user.getFb_token(), notificationBody, NotificationType.ACCEPT_INVITATION);
+    }
+
+    private void addColumn(User user) {
+        String notificationBody = "Added column to the project!";
+        sendNotification(user.getFb_token(), notificationBody, NotificationType.ADD_COLUMN);
+    }
+
+    private void addTask(User user) {
+        String notificationBody = "Added task!";
+        sendNotification(user.getFb_token(), notificationBody, NotificationType.ADD_TASK);
+    }
+
+    private void taskReorder(User user) {
+        String notificationBody = "Tasks are reordered!!!";
+        sendNotification(user.getFb_token(), notificationBody, NotificationType.TASK_REORDER);
+    }
+
+    private void boardReorder(User user) {
+        String notificationBody = "Boards are reordered!";
+        sendNotification(user.getFb_token(), notificationBody, NotificationType.BOARD_REORDER);
+    }
+
+    void sendAssignmentNotification(Notification notification) {
         String notificationBody = notification.getNotifiedBy().getUsername() + " has assigned you the task " + notification.getTask().getTitle() + " in project " + notification.getProject().getName();
-        headers.set("Authorization", "key=" + API_KEY);
+        sendNotification(notification.getNotifiedTo().getFb_token(), notificationBody, NotificationType.ASSIGNING);
+    }
+
+    private void sendNotification(String fbToken, String notificationBody, NotificationType notificationType) {
         Map<String, Object> map = new HashMap<>();
-        map.put("to", notification.getNotifiedTo().getFb_token());
+        map.put("to", fbToken);
         map.put("notification", new FbNotificationResponse(
-                "Task assignment!", CLICK_ACTION_URL, notificationBody
+                CLICK_ACTION_URL, notificationBody, notificationType
         ));
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
         this.restTemplate.postForEntity(URL, entity, Object.class);
@@ -79,5 +125,14 @@ public class FirebaseMessagingService {
 
     public static String getClickActionUrl() {
         return CLICK_ACTION_URL;
+    }
+
+
+    public HttpHeaders getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HttpHeaders headers) {
+        this.headers = headers;
     }
 }

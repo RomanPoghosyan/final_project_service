@@ -34,11 +34,15 @@ public class TaskStatusServiceTest {
     AddTaskStatusRequest addTaskStatusRequest;
 
     @Mock
+    FirebaseMessagingService firebaseMessagingService;
+
+    @Mock
     Authentication authentication;
 
     @Test//????? xia qcum nullpointer
     public void testTaskStatusServiceAdd() throws UserNotFound, ProjectNotFound {
-        TaskStatusService taskStatusService = new TaskStatusService(userService, projectService, taskStatusRepository);
+        TaskStatusService taskStatusService = new TaskStatusService(userService, projectService,
+                taskStatusRepository, firebaseMessagingService);
         Project project = new Project();
         when(authentication.getName()).thenReturn("John");
         when(addTaskStatusRequest.getProjectId()).thenReturn(1L);
