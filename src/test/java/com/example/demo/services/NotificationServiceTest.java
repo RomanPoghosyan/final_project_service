@@ -27,7 +27,7 @@ public class NotificationServiceTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         notificationService = new NotificationService(notificationRepository, projectService,
-                userService, taskService, roleService, projectUserRoleLinkService);
+                userService, taskService, roleService, projectUserRoleLinkService, firebaseMessagingService);
     }
 
     @Mock
@@ -47,6 +47,9 @@ public class NotificationServiceTest {
 
     @Mock
     ProjectUserRoleLinkService projectUserRoleLinkService;
+
+    @Mock
+    FirebaseMessagingService firebaseMessagingService;
 
     @Test
     public void testSave() {
